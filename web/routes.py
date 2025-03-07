@@ -3,7 +3,7 @@ import subprocess
 from config import CONFIG
 import requests
 import icalendar
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone, date, timedelta
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -46,7 +46,8 @@ def calendar():
         calendar_data = icalendar.Calendar.from_ical(response.text)
 
         events = []
-        now = datetime.now(timezone.utc).date()  # Get today's date (without time)
+        now = datetime.now(timezone.utc).date()  # Get today's date
+        end_date = now + timedelta(days=7)  # 7 days ahead
 
         for component in calendar_data.walk():
             if component.name == "VEVENT":
@@ -54,15 +55,17 @@ def calendar():
                 event_summary = component.get("SUMMARY")
 
                 # Handle all-day events (date only)
-                if isinstance(event_start, date) and event_start == now:
-                    events.append({"summary": event_summary, "start": str(event_start)})
+                if isinstance(event_start, date):
+                    if now <= event_start <= end_date:
+                        events.append({"summary": event_summary, "start": str(event_start)})
 
-                # Handle events with time (convert to UTC-aware datetime)
-                elif isinstance(event_start, datetime) and event_start.date() == now:
+                # Handle timed events (convert to UTC-aware datetime)
+                elif isinstance(event_start, datetime):
                     event_start = event_start.replace(tzinfo=timezone.utc)
-                    events.append({"summary": event_summary, "start": event_start.isoformat()})
+                    if now <= event_start.date() <= end_date:
+                        events.append({"summary": event_summary, "start": event_start.isoformat()})
 
         return jsonify(events)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 5000
