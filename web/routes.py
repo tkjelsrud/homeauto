@@ -12,18 +12,22 @@ def check_memory():
         lines = result.stdout.split("\n")
 
         # Extract memory values
-        headers = lines[0].split()
-        memory_values = lines[1].split()
+        mem_values = lines[1].split()  # Second line (Memory)
+        swap_values = lines[2].split()  # Third line (Swap)
 
+        # Return data as JSON
         memory_info = {
-            headers[0]: memory_values[0],   # "Mem:"
-            headers[1]: memory_values[1],   # Total
-            headers[2]: memory_values[2],   # Used
-            headers[3]: memory_values[3],   # Free
-            headers[4]: memory_values[4],   # Shared
-            headers[5]: memory_values[5],   # Buffers
-            headers[6]: memory_values[6]    # Available
+            "total": mem_values[1],     # Total Memory
+            "used": mem_values[2],      # Used Memory
+            "free": mem_values[3],      # Free Memory
+            "shared": mem_values[4],    # Shared Memory
+            "buff/cache": mem_values[5], # Buffers + Cache
+            "available": mem_values[6], # Available Memory
+            "swap_total": swap_values[1],  # Total Swap
+            "swap_used": swap_values[2],   # Used Swap
+            "swap_free": swap_values[3]    # Free Swap
         }
+
 
         return jsonify(memory_info)
 
