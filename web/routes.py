@@ -1,5 +1,9 @@
 from flask import Blueprint, jsonify
 import subprocess
+from config import CONFIG
+import requests
+import icalendar
+from datetime import datetime, timezone
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -30,6 +34,34 @@ def check_memory():
 
 
         return jsonify(memory_info)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@routes.route("/calendar", methods=["GET"])
+def calendar():
+    try:
+        # Fetch and parse calendar data
+        response = requests.get(CONFIG['calendar'])
+        calendar_data = icalendar.Calendar.from_ical(response.text)
+
+        events = []
+        now = datetime.now(timezone.utc)
+
+        for component in calendar_data.walk():
+            if component.name == "VEVENT":
+                event_start = component.get("DTSTART").dt
+                event_summary = component.get("SUMMARY")
+
+                if isinstance(event_start, datetime):
+                    event_start = event_start.replace(tzinfo=timezone.utc)
+
+                # Show only today's events
+                if event_start.date() == now.date():
+                    events.append({"summary": event_summary, "start": event_start.isoformat()})
+
+        return jsonify(events)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
