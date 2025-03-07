@@ -9,6 +9,6 @@ def get_weather(LAT, LON):
     if response.status_code == 200:
         data = response.json()
         temp = data["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"]
-        print(f"Current temperature: {temp}°C")
+        return f"{temp}°C"
     else:
-        print("Failed to fetch weather data")
+        return "Ukjent temp."
