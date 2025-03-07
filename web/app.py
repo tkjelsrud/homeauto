@@ -1,8 +1,15 @@
 from flask import Flask, send_from_directory, render_template
 from integration.weather import get_weather
+from web.routes import routes
 from config import CONFIG
 
-app = Flask(__name__, template_folder="templates")
+def create_app():
+    app = Flask(__name__)
+
+    # Register Blueprint
+    app.register_blueprint(routes)
+
+    return app
 
 @app.route("/")
 def home():
@@ -23,4 +30,5 @@ def pihole_img(filename):
     return send_from_directory("/var/www/html/admin/img", filename)
 
 if __name__ == "__main__":
+    app = create_app()
     app.run(host="0.0.0.0", port=5000, debug=True)
