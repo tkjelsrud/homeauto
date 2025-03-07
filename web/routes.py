@@ -3,7 +3,7 @@ import subprocess
 from config import CONFIG
 import requests
 import icalendar
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -38,7 +38,6 @@ def check_memory():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 @routes.route("/calendar", methods=["GET"])
 def calendar():
     try:
@@ -47,18 +46,20 @@ def calendar():
         calendar_data = icalendar.Calendar.from_ical(response.text)
 
         events = []
-        now = datetime.now(timezone.utc)
+        now = datetime.now(timezone.utc).date()  # Get today's date (without time)
 
         for component in calendar_data.walk():
             if component.name == "VEVENT":
-                event_start = component.get("DTSTART").dt
+                event_start = component.get("DTSTART").dt  # Could be date or datetime
                 event_summary = component.get("SUMMARY")
 
-                if isinstance(event_start, datetime):
-                    event_start = event_start.replace(tzinfo=timezone.utc)
+                # Handle all-day events (date only)
+                if isinstance(event_start, date) and event_start == now:
+                    events.append({"summary": event_summary, "start": str(event_start)})
 
-                # Show only today's events
-                if event_start.date() == now.date():
+                # Handle events with time (convert to UTC-aware datetime)
+                elif isinstance(event_start, datetime) and event_start.date() == now:
+                    event_start = event_start.replace(tzinfo=timezone.utc)
                     events.append({"summary": event_summary, "start": event_start.isoformat()})
 
         return jsonify(events)
