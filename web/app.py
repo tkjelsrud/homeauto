@@ -4,7 +4,6 @@ from config import CONFIG
 
 app = Flask(__name__, template_folder="templates")
 
-
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -22,10 +21,6 @@ def pihole_css(filename):
 @app.route("/pihole/img/<path:filename>")
 def pihole_img(filename):
     return send_from_directory("/var/www/html/admin/img", filename)
-
-app = Flask(__name__, template_folder="templates", static_folder="static")
-
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
