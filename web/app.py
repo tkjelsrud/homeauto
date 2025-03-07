@@ -1,6 +1,6 @@
 from flask import Flask, send_from_directory, render_template
 from integration.weather import get_weather
-from web.routes import routes
+from routes import routes
 from config import CONFIG
 
 def create_app():
