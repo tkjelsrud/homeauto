@@ -46,19 +46,19 @@ def calendar():
         calendar_data = icalendar.Calendar.from_ical(response.text)
 
         events = []
-        now = datetime.now(timezone.utc).date()  # Get today's date as `date`
+        now = datetime.now(timezone.utc).date()  # Convert to `date` type for comparison
         end_date = now + timedelta(days=7)  # 7 days ahead
 
         for component in calendar_data.walk():
             if component.name == "VEVENT":
-                event_start = component.get("DTSTART").dt  # Can be date or datetime
+                event_start = component.get("DTSTART").dt  # Can be `date` or `datetime`
                 event_summary = component.get("SUMMARY")
 
-                # Convert datetime to date if necessary
+                # Ensure event_start is always a date
                 if isinstance(event_start, datetime):
-                    event_start = event_start.date()
+                    event_start = event_start.astimezone(timezone.utc).date()  # Convert to date
 
-                # Check if event falls within the next 7 days
+                # Compare dates correctly
                 if now <= event_start <= end_date:
                     events.append({"summary": event_summary, "start": str(event_start)})
 
