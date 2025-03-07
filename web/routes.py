@@ -54,13 +54,18 @@ def calendar():
                 event_start = component.get("DTSTART").dt  # Can be `date` or `datetime`
                 event_summary = component.get("SUMMARY")
 
-                # Ensure event_start is always a date
+                # If event_start is datetime, format it properly with time
                 if isinstance(event_start, datetime):
-                    event_start = event_start.astimezone(timezone.utc).date()  # Convert to date
+                    event_start = event_start.astimezone(timezone.utc)
+                    formatted_start = event_start.strftime("%Y-%m-%d %H:%M:%S")  # Keep time format
 
-                # Compare dates correctly
-                if now <= event_start <= end_date:
-                    events.append({"summary": event_summary, "start": str(event_start)})
+                # If event_start is a date, keep only the date (all-day event)
+                elif isinstance(event_start, date):
+                    formatted_start = event_start.strftime("%Y-%m-%d")
+
+                # Compare by date only
+                if now <= event_start.date() <= end_date:
+                    events.append({"summary": event_summary, "start": formatted_start})
 
         return jsonify(events)
 
