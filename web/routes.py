@@ -41,29 +41,26 @@ def check_memory():
 @routes.route("/calendar", methods=["GET"])
 def calendar():
     try:
-        # Fetch and parse calendar data
+        # Fetch and parse calendar data from CONFIG
         response = requests.get(CONFIG['calendar'])
         calendar_data = icalendar.Calendar.from_ical(response.text)
 
         events = []
-        now = datetime.now(timezone.utc).date()  # Get today's date
+        now = datetime.now(timezone.utc).date()  # Get today's date as `date`
         end_date = now + timedelta(days=7)  # 7 days ahead
 
         for component in calendar_data.walk():
             if component.name == "VEVENT":
-                event_start = component.get("DTSTART").dt  # Could be date or datetime
+                event_start = component.get("DTSTART").dt  # Can be date or datetime
                 event_summary = component.get("SUMMARY")
 
-                # Handle all-day events (date only)
-                if isinstance(event_start, date):
-                    if now <= event_start <= end_date:
-                        events.append({"summary": event_summary, "start": str(event_start)})
+                # Convert datetime to date if necessary
+                if isinstance(event_start, datetime):
+                    event_start = event_start.date()
 
-                # Handle timed events (convert to UTC-aware datetime)
-                elif isinstance(event_start, datetime):
-                    event_start = event_start.replace(tzinfo=timezone.utc)
-                    if now <= event_start.date() <= end_date:
-                        events.append({"summary": event_summary, "start": event_start.isoformat()})
+                # Check if event falls within the next 7 days
+                if now <= event_start <= end_date:
+                    events.append({"summary": event_summary, "start": str(event_start)})
 
         return jsonify(events)
 
