@@ -1,11 +1,12 @@
 from flask import Flask
 from integration.weather import get_weather
+from config import CONFIG
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    w = get_weather()
+    w = get_weather(CONFIG['LAT'], CONFIG['LON'])
 
     return "<p>Hello, World!</p><br/>" + w
 
