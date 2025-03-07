@@ -1,14 +1,31 @@
-from flask import Flask
+from flask import Flask, send_from_directory, render_template
 from integration.weather import get_weather
 from config import CONFIG
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
+
 
 @app.route("/")
-def hello_world():
-    w = get_weather(CONFIG['LAT'], CONFIG['LON'])
+def home():
+    return render_template("index.html")
 
-    return "<p>Hello, World!</p><br/>" + w + " : " + str(CONFIG)
+#@app.route("/")
+#def hello_world():
+#    w = get_weather(CONFIG['LAT'], CONFIG['LON'])
+#
+#    return "<p>Hello, World!</p><br/>" + w + " : " + str(CONFIG)
+
+@app.route("/pihole/css/<path:filename>")
+def pihole_css(filename):
+    return send_from_directory("/var/www/html/admin/style", filename)
+
+@app.route("/pihole/img/<path:filename>")
+def pihole_img(filename):
+    return send_from_directory("/var/www/html/admin/img", filename)
+
+app = Flask(__name__, template_folder="templates", static_folder="static")
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
