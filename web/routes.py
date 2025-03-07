@@ -68,4 +68,4 @@ def calendar():
         return jsonify(events)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 5000
+        return jsonify({"error": str(e)}), 500
