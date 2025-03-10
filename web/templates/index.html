@@ -45,7 +45,10 @@
             color: #000000;
             font-size: 14px;
             font-weight: bold;
-            text-decoration: underline;
+            padding: 2px;
+        }
+        .add {
+            color: #b0b0b0;
         }
         iframe {
             width: 100%;
@@ -127,7 +130,7 @@
                     const list = document.createElement("ul");
                     widgetData.data.forEach(item => {
                         const listItem = document.createElement("li");
-                        listItem.innerText = `${item.start}: ${item.summary}`;
+                        listItem.innerText = `<span class="add">${item.start}:</span> ${item.summary}`;
                         list.appendChild(listItem);
                     });
                     widgetDiv.appendChild(list);
