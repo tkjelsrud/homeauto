@@ -58,3 +58,9 @@ def weather():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@routes.route("/ruter", methods=["GET"])
+def ruter():
+    return jsonify({
+        "iframe_url": CONFIG['RUTER']
+    })
