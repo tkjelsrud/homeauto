@@ -196,8 +196,8 @@
                     
                     we = widgetData.data;
                     let listItem = document.createElement("div");
-                    listItem.classList.add("float");
-                    listItem.innerHTML = `${we.total.toFixed(2)}kr`;
+                    listItem.classList.add("float", "big");
+                    listItem.innerHTML = `${we.total.toFixed(2)}kr<span class="add">/kw</span>`;
                     list.appendChild(listItem);
 
                     we.consumption.forEach(item => {
