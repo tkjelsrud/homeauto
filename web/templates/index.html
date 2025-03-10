@@ -288,9 +288,10 @@
                 else if(endpoint === "/dinner") {
                     const list = document.createElement("ul");
                     if(widgetData.data.important != "") {
-                        const listItem = document.createElement("li");
-                        listItem.innerHTML = `<span class="active">${widgetData.data.important}</span>`;
-                        list.appendChild(listItem);
+                        const impDiv = document.createElement("div");
+                        impDiv.classList.add("float", "active");
+                        impDiv.innerHTML = `${widgetData.data.important}`;
+                        widgetDiv.appendChild(impDiv);
                     }
 
                     maxDays = 5;
