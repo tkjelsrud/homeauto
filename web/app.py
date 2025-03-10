@@ -24,11 +24,11 @@ def widgets():
         {"endpoint": "/weather"},
         {"endpoint": "/calendar"},
         {"endpoint": "/waste"},
-        {"endpoint": "/ruter"},
-        #{"endpoint": "/dinner"},
+        {"endpoint": "/dinner"},
         {"endpoint": "/lights"},
         {"endpoint": "/energy"},
-        {"endpoint": "/network"}
+        {"endpoint": "/network"},        
+        {"endpoint": "/ruter"}
     ])
 
 if __name__ == "__main__":
