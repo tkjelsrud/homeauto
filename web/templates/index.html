@@ -75,6 +75,9 @@
             background-color: #EEC14D;
             color: #240825;
         }
+        .wide {
+            width: 100%;
+        }
         .float {
             float: left;
             width: 146px;
@@ -289,7 +292,7 @@
                     const list = document.createElement("ul");
                     if(widgetData.data.important != "") {
                         const impDiv = document.createElement("div");
-                        impDiv.classList.add("float", "active");
+                        impDiv.classList.add("float", "active", "biggar", "wide");
                         impDiv.innerHTML = `${widgetData.data.important}`;
                         widgetDiv.appendChild(impDiv);
                     }
