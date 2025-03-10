@@ -274,7 +274,7 @@
 
                     widgetDiv.appendChild(list);
                 }
-                else if(widget.endpoint === "/dinner") {
+                else if(endpoint === "/dinner") {
                     const list = document.createElement("ul");
                     if(widgetData.data.important != "") {
                         const listItem = document.createElement("li");
@@ -335,7 +335,7 @@
             console.error(`Error loading ${endpoint}:`, error);
         }
     }
-    
+
     loadWidgets();
 
     function updateClock() {
