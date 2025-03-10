@@ -225,7 +225,7 @@
                         if (eventDate !== todayDate) {
                             listItem.classList.add("subdue");
                         }
-                        listItem.innerHTML = `<p><span class="add">${eventTime}:</span> ${item.summary}</p>`;
+                        listItem.innerHTML = `<p><span class="add">${eventTime}</span> ${item.summary}</p>`;
                         list.appendChild(listItem);
                     });
                     widgetDiv.appendChild(list);
@@ -308,7 +308,7 @@
                                 listItem.classList.add("subdue");
                             }
 
-                            listItem.innerHTML = `<p><span class="add">${eventDate}:</span> ${item.description}</p>`;
+                            listItem.innerHTML = `<p><span class="add">${eventDate}</span> ${item.description}</p>`;
                             list.appendChild(listItem);
                         }
                     });
