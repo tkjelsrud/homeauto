@@ -62,29 +62,29 @@
 
         for (const widget of widgets) {
             const dataResponse = await fetch(widget.endpoint);
-            const widget = await dataResponse.json();
+            const widgetData = await dataResponse.json();
 
             const widgetDiv = document.createElement("div");
             widgetDiv.classList.add("widget");
 
-            if (widget.iframe) {
+            if (widgetData.iframe) {
                 const iframe = document.createElement("iframe");
-                iframe.src = widget.iframe;
+                iframe.src = widgetData.iframe;
                 widgetDiv.appendChild(iframe);
             } else {
-                if (widget.data) {
-                    if (Array.isArray(widget.data)) {
+                if (widgetData.data) {
+                    if (Array.isArray(widgetData.data)) {
                         // 📌 If data is an array (e.g., Calendar)
                         const list = document.createElement("ul");
-                        widget.data.forEach(item => {
+                        widgetData.data.forEach(item => {
                             const listItem = document.createElement("li");
                             listItem.innerText = `${item.summary} - ${item.start}`;
                             list.appendChild(listItem);
                         });
                         container.appendChild(list);
-                    } else if (typeof widget.data === "object") {
+                    } else if (typeof widgetData.data === "object") {
                         // 📌 If data is an object (e.g., Weather)
-                        Object.entries(widget.data).forEach(([key, value]) => {
+                        Object.entries(widgetData.data).forEach(([key, value]) => {
                             const p = document.createElement("p");
                             p.innerText = `${key.replace(/_/g, " ")}: ${value}`;
                             container.appendChild(p);
@@ -92,7 +92,7 @@
                     } else {
                         // 📌 Default text format
                         const p = document.createElement("p");
-                        p.innerText = widget.data;
+                        p.innerText = widgetData.data;
                         container.appendChild(p);
                     }
                 }
