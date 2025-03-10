@@ -40,6 +40,11 @@
         .icon {
             font-size: 12px;
         }
+        .title {
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
         iframe {
             width: 100%;
             height: 420px;
@@ -97,7 +102,7 @@
                 widgetDiv.appendChild(iframe);
             } else {
                 const ph = document.createElement("div");
-                ph.innerHTML = `<span class="icon">${widgetData.icon}</span> <h3>${widgetData.title}</h3>`;
+                ph.innerHTML = `<span class="icon">${widgetData.icon}</span> <span class="title">${widgetData.title}</span>`;
                 widgetDiv.appendChild(ph);
 
                 if(widget.endpoint === "/weather") {
