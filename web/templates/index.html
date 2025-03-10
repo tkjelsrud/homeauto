@@ -152,10 +152,10 @@
                 }
                 else if(widget.endpoint === "/lights") {
                     const list = document.createElement("div")
-                    list.classList.add("float");
                     widgetData.data.forEach(item => {
                         const listItem = document.createElement("div");
                         listItem.classList.add(item.status.toLowerCase());
+                        listItem.classList.add("float");
                         listItem.innerHTML = `${item.name} (${item.num_lights} lys)`;
                         list.appendChild(listItem);
                     });
