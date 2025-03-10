@@ -91,7 +91,7 @@ def get_tibber(token):
             "energy": round(price_info.get("energy", 0), 4),
             "tax": round(price_info.get("tax", 0), 4),
             "timestamp": price_info.get("startsAt", "N/A"),
-            "consumption": consumption
+            "consumption": consumption.get("nodes", [])
         }
 
     except requests.RequestException as e:
