@@ -388,7 +388,7 @@
                         const listItem = document.createElement("li");
                         const eventDate = new Date(item.date).toISOString().split("T")[0]; // Get YYYY-MM-DD
                         const todayDate = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-
+                        console.log("adding day:" + eventDate);
                         // Add class if not today
                         if (eventDate !== todayDate) {
                             listItem.classList.add("subdue");
