@@ -224,7 +224,7 @@
 
                     we.forEach(item => {
                         let listItem = document.createElement("div");
-                        listItem.classList.add("float", (item.status == "Online" ? "on": "off"));
+                        listItem.classList.add("float", (item.status == "Up" ? "on": "off"));
                         listItem.innerHTML = `${item.vendor}`;
                         list.appendChild(listItem);
                     });
