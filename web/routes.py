@@ -62,7 +62,7 @@ def weather():
 
         return jsonify({
             "title": "🌤 Været",
-            "data": weather_data
+            "data": weather_data['data']
         })
 
     except Exception as e:

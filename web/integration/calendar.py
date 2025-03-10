@@ -55,4 +55,4 @@ def get_calendar(URL):
             if now <= event_date <= end_date:
                 events.append({"summary": event_summary, "start": formatted_start})
 
-    return jsonify(events)
+    return events
