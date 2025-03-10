@@ -56,6 +56,21 @@
    </div>
 
    <script>
+    const weatherIcons = {
+        "clearsky": "☀️",
+        "partlycloudy": "⛅",
+        "cloudy": "☁️",
+        "rainshowers": "🌦",
+        "lightrain": "🌧",
+        "heavyrain": "🌧🌧",
+        "thunderstorm": "⛈",
+        "snow": "❄️"
+    };
+
+    function getCustomWeatherIcon(symbolCode) {
+        return weatherIcons[symbolCode] || "❓";  // Default icon if unknown
+    }
+
     async function loadWidgets() {
         const response = await fetch("/widgets"); // Get list of widgets
         const widgets = await response.json();
@@ -72,28 +87,46 @@
                 iframe.src = widgetData.iframe;
                 widgetDiv.appendChild(iframe);
             } else {
-                if (widgetData.data) {
-                    if (Array.isArray(widgetData.data)) {
-                        // 📌 If data is an array (e.g., Calendar)
-                        const list = document.createElement("ul");
-                        widgetData.data.forEach(item => {
-                            const listItem = document.createElement("li");
-                            listItem.innerText = `${item.summary} - ${item.start}`;
-                            list.appendChild(listItem);
-                        });
-                        widgetDiv.appendChild(list);
-                    } else if (typeof widgetData.data === "object") {
-                        // 📌 If data is an object (e.g., Weather)
-                        Object.entries(widgetData.data).forEach(([key, value]) => {
+                if(widget.endpoint == "/weather") {
+                    const list = document.createElement("ul");
+
+                    widgetData.data.forEach(item => {
+                        const listItem = document.createElement("li");
+                        if(item.summary) {
+                            listItem.innerText = `${getCustomWeatherIcon(item.summary.symbol_code)}`;
+                        }
+                        
+                        //
+                        //
+
+                        list.appendChild(listItem);
+                    });
+                    widgetDiv.appendChild(list);
+                }
+                else {
+                    if (widgetData.data) {
+                        if (Array.isArray(widgetData.data)) {
+                            // 📌 If data is an array (e.g., Calendar)
+                            const list = document.createElement("ul");
+                            widgetData.data.forEach(item => {
+                                const listItem = document.createElement("li");
+                                listItem.innerText = `${item.summary} - ${item.start}`;
+                                list.appendChild(listItem);
+                            });
+                            widgetDiv.appendChild(list);
+                        } else if (typeof widgetData.data === "object") {
+                            // 📌 If data is an object (e.g., Weather)
+                            Object.entries(widgetData.data).forEach(([key, value]) => {
+                                const p = document.createElement("p");
+                                p.innerText = `${key.replace(/_/g, " ")}: ${value}`;
+                                widgetDiv.appendChild(p);
+                            });
+                        } else {
+                            // 📌 Default text format
                             const p = document.createElement("p");
-                            p.innerText = `${key.replace(/_/g, " ")}: ${value}`;
+                            p.innerText = widgetData.data;
                             widgetDiv.appendChild(p);
-                        });
-                    } else {
-                        // 📌 Default text format
-                        const p = document.createElement("p");
-                        p.innerText = widgetData.data;
-                        widgetDiv.appendChild(p);
+                        }
                     }
                 }
             }
