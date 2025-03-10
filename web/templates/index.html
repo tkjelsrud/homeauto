@@ -200,7 +200,7 @@
                     listItem.innerHTML = `${we.total.toFixed(2)}kr`;
                     list.appendChild(listItem);
 
-                    widgetData.consumption.forEach(item => {
+                    we.consumption.forEach(item => {
                         let listItem = document.createElement("div");
                         listItem.classList.add("float");
                         listItem.innerHTML = `<span class="add">${getShortDay(item.from)}:</span> ${item.cost.toFixed(2)}kr (${item.consumption} kWh)`;
