@@ -3,6 +3,7 @@ import subprocess
 from config import CONFIG
 from integration.calendar import get_calendar
 from integration.weather import get_weather
+from integration.lights import get_zones
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -53,6 +54,21 @@ def calendar():
             "title": "Kalender",
             "icon": "📅",
             "data": sorted_events
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@routes.route("/lights", methods=["GET"])
+def lights():
+    try:
+        # Fetch and parse calendar data from CONFIG
+        zone_data = get_zones(CONFIG['PHILIPSHUE_HOST'], CONFIG['PHILIPSHUE_KEY'])
+
+        return jsonify({
+            "title": "Lys",
+            "icon": "✨",
+            "data": zone_data
         })
 
     except Exception as e:
