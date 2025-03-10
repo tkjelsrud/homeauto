@@ -70,6 +70,6 @@ def get_dinner(DINNERURL):
 
     # Assign Dates
     for i, entry in enumerate(entries):
-        entry["date"] = (start_date + datetime.timedelta(days=i)).strftime("%A, %d. %B")
+        entry["date"] = (start_date + datetime.timedelta(days=i)).strftime("%Y-%m-%d %H:%M:%S")
 
     return {"important": important, "days": entries}  # ✅ Returns structured JSON data
