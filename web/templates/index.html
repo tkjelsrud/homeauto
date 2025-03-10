@@ -60,6 +60,10 @@
             background-color: #21190d;
             color: #886e5c;
         }
+        .active {
+            background-color: #EEC14D;
+            color: #240825;
+        }
         .float {
             float: left;
             width: 100px;
@@ -196,13 +200,13 @@
                     
                     we = widgetData.data;
                     let listItem = document.createElement("div");
-                    listItem.classList.add("float", "big");
+                    listItem.classList.add("float", "big", "active");
                     listItem.innerHTML = `${we.total.toFixed(2)}kr<span class="add">/kw</span>`;
                     list.appendChild(listItem);
 
                     we.consumption.forEach(item => {
                         let listItem = document.createElement("div");
-                        listItem.classList.add("float");
+                        listItem.classList.add("float", "off");
                         listItem.innerHTML = `<span class="add">${getShortDay(item.from)}:</span> ${item.cost.toFixed(2)}kr (${item.consumption} kWh)`;
                         list.appendChild(listItem);
                     });
