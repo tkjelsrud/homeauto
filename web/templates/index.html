@@ -113,6 +113,12 @@
         return weatherIcons[symbolCode] || "❓";  // Default icon if unknown
     }
 
+    function getShortDay(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("nb-NO", { weekday: "short" }); // "Sun"
+    }
+
+
     async function loadWidgets() {
         const response = await fetch("/widgets"); // Get list of widgets
         const widgets = await response.json();
@@ -194,7 +200,14 @@
                     listItem.innerHTML = `${we.total.toFixed(2)}kr`;
                     list.appendChild(listItem);
 
-                    widgetDiv.appendChild(list);
+                    widgetData.consumption.forEach(item => {
+                        let listItem = document.createElement("div");
+                        listItem.classList.add("float");
+                        listItem.innerHTML = `<span class="add">${getShortDay(item.from)}:</span> ${item.cost.toFixed(2)}kr (${item.consumption} kWh)`;
+                        list.appendChild(listItem);
+                    });
+
+                    we.consumption.appendChild(list);
                 }
                 else {
                     if (widgetData.data) {
