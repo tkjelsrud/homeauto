@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 import subprocess
 from config import CONFIG
 from integration.calendar import get_calendar
+from integration.weather import get_weather
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -41,6 +42,17 @@ def calendar():
     try:
         # Fetch and parse calendar data from CONFIG
         json = get_calendar(CONFIG['calendar'])
+
+        return json
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@routes.route("/weather", methods=["GET"])
+def calendar():
+    try:
+        # Fetch and parse calendar data from CONFIG
+        json = get_weather(CONFIG['LAT'], CONFIG['LON'])
 
         return json
 

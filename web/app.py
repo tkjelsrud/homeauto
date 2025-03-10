@@ -12,12 +12,6 @@ app.register_blueprint(routes)
 def home():
     return render_template("index.html")
 
-#@app.route("/")
-#def hello_world():
-#    w = get_weather(CONFIG['LAT'], CONFIG['LON'])
-#
-#    return "<p>Hello, World!</p><br/>" + w + " : " + str(CONFIG)
-
 @app.route("/pihole/css/<path:filename>")
 def pihole_css(filename):
     return send_from_directory("/var/www/html/admin/style", filename)
