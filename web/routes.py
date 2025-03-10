@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify
 import subprocess
-from web.config import CONFIG
-import requests
-import icalendar
-from datetime import datetime, timezone, date, timedelta
+from config import CONFIG
+from integration.calendar import get_calendar
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -42,34 +40,7 @@ def check_memory():
 def calendar():
     try:
         # Fetch and parse calendar data from CONFIG
-        response = requests.get(CONFIG['calendar'])
-        calendar_data = icalendar.Calendar.from_ical(response.text)
-
-        events = []
-        now = datetime.now(timezone.utc).date()  # Convert to `date` type for comparison
-        end_date = now + timedelta(days=7)  # 7 days ahead
-
-        for component in calendar_data.walk():
-            if component.name == "VEVENT":
-                event_start = component.get("DTSTART").dt  # Can be `date` or `datetime`
-                event_summary = component.get("SUMMARY")
-
-                # Handle datetime events (convert to UTC)
-                if isinstance(event_start, datetime):
-                    event_start = event_start.astimezone(timezone.utc)
-                    formatted_start = event_start.strftime("%Y-%m-%d %H:%M:%S")  # Keep time format
-                    event_date = event_start.date()  # Extract just the date for comparison
-
-                # Handle all-day events (date only)
-                elif isinstance(event_start, date):
-                    formatted_start = event_start.strftime("%Y-%m-%d")
-                    event_date = event_start  # Already a date, no need to extract
-
-                # Compare by date only (fixes `.date()` error)
-                if now <= event_date <= end_date:
-                    events.append({"summary": event_summary, "start": formatted_start})
-
-        return jsonify(events)
+        json = get_calendar(CONFIG['calendar'])
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
