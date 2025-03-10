@@ -18,6 +18,9 @@ day_map = {
 
 def get_dinner(DINNERURL):
     response = requests.get(DINNERURL)
+
+    logging.info(f"Response: {response}") 
+
     if response.status_code != 200:
         return {"error": "Failed to fetch dinner plan"}
 
