@@ -212,14 +212,20 @@
                     const list = document.createElement("ul");
                     widgetData.data.forEach(item => {
                         const listItem = document.createElement("li");
+                        const eventDateTime = new Date(item.start);
                         const eventDate = new Date(item.start).toISOString().split("T")[0]; // Get YYYY-MM-DD
                         const todayDate = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+                        const eventTime = eventDateTime.toLocaleTimeString("no-NO", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false, // Ensures 24-hour format
+                        });
 
                         // Add class if not today
                         if (eventDate !== todayDate) {
                             listItem.classList.add("subdue");
                         }
-                        listItem.innerHTML = `<p><span class="add">${item.start}:</span> ${item.summary}</p>`;
+                        listItem.innerHTML = `<p><span class="add">${eventTime}:</span> ${item.summary}</p>`;
                         list.appendChild(listItem);
                     });
                     widgetDiv.appendChild(list);
