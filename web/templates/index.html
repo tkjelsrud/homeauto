@@ -45,9 +45,9 @@
         .title {
             background-color: #88B252;
             color: #000000;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            padding: 2px;
+            padding: 4px;
         }
         .add {
             color: #b0b0b0;
@@ -66,6 +66,9 @@
             padding: 4px;
             border-radius: 8px;
             margin: 4px;
+        }
+        .subdue {
+            opacity: 0.5;
         }
         iframe {
             width: 100%;
@@ -147,6 +150,13 @@
                     const list = document.createElement("ul");
                     widgetData.data.forEach(item => {
                         const listItem = document.createElement("li");
+                        const eventDate = new Date(item.start).toISOString().split("T")[0]; // Get YYYY-MM-DD
+                        const todayDate = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+
+                        // Add class if not today
+                        if (eventDate !== todayDate) {
+                            listItem.classList.add("subdue");
+                        }
                         listItem.innerHTML = `<p><span class="add">${item.start}:</span> ${item.summary}</p>`;
                         list.appendChild(listItem);
                     });
