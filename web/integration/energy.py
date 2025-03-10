@@ -38,26 +38,34 @@ def get_tibber(token):
 
     try:
         response = requests.post(url, json=payload, headers=headers)
-
-        if response.status_code != 200:
-            return {"error": f"API request failed with status {response.status_code}"}
-
         data = response.json()
 
-        logging.info(data)
+        logging.info(f"🔍 Full API Response: {data}")  # ✅ Debugging
 
-        # Extracting relevant data
-        homes = data.get("data", {}).get("viewer", {}).get("homes", [])
+        if not isinstance(data, dict):
+            return {"error": "API response is not a dictionary"}
+
+        if "data" not in data:
+            return {"error": "No 'data' key found in response"}
+
+        viewer = data["data"].get("viewer")
+        if viewer is None:
+            return {"error": "No 'viewer' key in response"}
+
+        homes = viewer.get("homes", [])
         if not homes:
             return {"error": "No home data found in Tibber API response"}
 
-        price_info = homes[0].get("currentSubscription", {}).get("priceInfo", {}).get("current", {})
+        subscription = homes[0].get("currentSubscription")
+        if subscription is None:
+            return {"error": "No current subscription data found"}
 
-        if not price_info:
+        price_info = subscription.get("priceInfo", {}).get("current")
+        if price_info is None:
             return {"error": "No current price data available"}
 
         return {
-            "total": round(price_info.get("total", 0), 4),  # Rounded for better readability
+            "total": round(price_info.get("total", 0), 4),
             "energy": round(price_info.get("energy", 0), 4),
             "tax": round(price_info.get("tax", 0), 4),
             "timestamp": price_info.get("startsAt", "N/A")
