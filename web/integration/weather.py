@@ -9,17 +9,7 @@ def get_weather(LAT, LON):
         data = response.json()
         timeseries = data["properties"]["timeseries"]
 
-        forecast = []
-        for i in [0, 3, 6]:  # Now, in 3 hours, and in 6 hours
-            try:
-                entry = timeseries[i]
-                temp = entry["data"]["instant"]["details"]["air_temperature"]
-                precipitation = entry["data"].get("next_1_hours", {}).get("summary", {}).get("symbol_code", "unknown")
+        if timeseries:
+            return timeseries[0]  # Return the latest available weather entry
 
-                forecast.append({"hours": i, "temperature": f"{temp}°C", "symbol": precipitation})
-            except IndexError:
-                forecast.append({"hours": i, "temperature": "N/A", "symbol": "N/A"})
-
-        return forecast
-    else:
-        return [{"hours": i, "temperature": "Ukjent temp.", "symbol": "unknown"} for i in [0, 3, 6]]
+    return {"error": "No weather data available"}
