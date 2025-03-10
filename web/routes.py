@@ -118,7 +118,7 @@ def energy():
         return jsonify({
             "title": "Strøm",
             "icon": "⚡",
-            "data": energy_data['data']
+            "data": energy_data
         })
 
     except Exception as e:
