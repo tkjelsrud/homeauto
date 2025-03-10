@@ -27,6 +27,7 @@ def widgets():
         #{"endpoint": "/dinner"},
         {"endpoint": "/lights"},
         {"endpoint": "/energy"},
+        {"endpoint": "/network"},
         {"endpoint": "/ruter"}
     ])
 
