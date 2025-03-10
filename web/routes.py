@@ -49,7 +49,7 @@ def calendar():
         return jsonify({"error": str(e)}), 500
 
 @routes.route("/weather", methods=["GET"])
-def calendar():
+def weather():
     try:
         # Fetch and parse calendar data from CONFIG
         json = get_weather(CONFIG['LAT'], CONFIG['LON'])
