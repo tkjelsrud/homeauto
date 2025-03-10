@@ -26,6 +26,7 @@ def get_dinner(DINNERURL):
 
     raw_text = response.text.strip()
     lines = raw_text.split("\n")
+    important = ""
     entries = []
 
     # Step 1: Parse days and descriptions
@@ -35,7 +36,7 @@ def get_dinner(DINNERURL):
             shorthand, description = match.groups()
 
             if shorthand == "VIKTIG":
-                logging.info(f"🔍 VIKTIG funnet: {description}") 
+                important = description.strip()
             else:
                 # Determine if "T" is Tuesday or Thursday
                 if shorthand == "T":
@@ -47,7 +48,7 @@ def get_dinner(DINNERURL):
                 entries.append({
                     "shorthand": shorthand,
                     "day": day_map[shorthand],  # Convert to full day name
-                    "description": description
+                    "description": description.strip()
                 })
         else:
             if len(entries) > 0:
@@ -71,4 +72,4 @@ def get_dinner(DINNERURL):
     for i, entry in enumerate(entries):
         entry["date"] = (start_date + datetime.timedelta(days=i)).strftime("%A, %d. %B")
 
-    return entries  # ✅ Returns structured JSON data
+    return {"important": important, "days": entries}  # ✅ Returns structured JSON data
