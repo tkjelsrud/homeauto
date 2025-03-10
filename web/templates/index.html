@@ -60,6 +60,11 @@
             background-color: #21190d;
             color: #886e5c;
         }
+        .float {
+            float: left;
+            width: 120px;
+            padding: 2px;
+        }
         iframe {
             width: 100%;
             height: 420px;
@@ -147,6 +152,7 @@
                 }
                 else if(widget.endpoint === "/lights") {
                     const list = document.createElement("div")
+                    list.classList.add("float");
                     widgetData.data.forEach(item => {
                         const listItem = document.createElement("div");
                         listItem.classList.add(item.status.toLowerCase());
