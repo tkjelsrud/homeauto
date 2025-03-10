@@ -41,6 +41,8 @@
             font-size: 12px;
         }
         .title {
+            background-color: #88B252;
+            color: #000000;
             font-size: 14px;
             font-weight: bold;
             text-decoration: underline;
@@ -102,7 +104,8 @@
                 widgetDiv.appendChild(iframe);
             } else {
                 const ph = document.createElement("div");
-                ph.innerHTML = `<span class="icon">${widgetData.icon}</span> <span class="title">${widgetData.title}</span>`;
+                ph.classList.add('title');
+                ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
                 widgetDiv.appendChild(ph);
 
                 if(widget.endpoint === "/weather") {
