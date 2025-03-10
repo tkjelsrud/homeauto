@@ -33,7 +33,8 @@ def check_memory():
 
 
         return jsonify({
-            "title": "🖥 Minne",
+            "title": "Minne",
+            "icon": "🖥",
             "data": memory_info
         })
 
@@ -47,7 +48,8 @@ def calendar():
         calendar_data = get_calendar(CONFIG['calendar'])
 
         return jsonify({
-            "title": "📅 Kalender",
+            "title": "Kalender",
+            "icon": "📅",
             "data": calendar_data
         })
 
@@ -61,7 +63,8 @@ def weather():
         weather_data = get_weather(CONFIG['LAT'], CONFIG['LON'])
 
         return jsonify({
-            "title": "🌤 Været",
+            "title": "Været",
+            "icon": "🌤",
             "data": weather_data['data']
         })
 
@@ -71,6 +74,7 @@ def weather():
 @routes.route("/ruter", methods=["GET"])
 def ruter():
     return jsonify({
-        "title": "🚌 Buss: Stig",
-        "iframe_url": CONFIG['RUTER']
+        "title": "Buss: Stig",
+        "icon": "🚌",
+        "iframe": CONFIG['RUTER']
     })
