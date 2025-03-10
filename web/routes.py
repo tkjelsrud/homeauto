@@ -8,6 +8,7 @@ from integration.dinner import get_dinner
 from integration.energy import get_tibber
 from integration.waste import get_garbage
 from integration.network import get_network
+from integration.bluesound import get_powernode
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -156,6 +157,20 @@ def network():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@routes.route("/music", methods=["GET"])
+def bluesound():
+    try:
+        # Fetch and parse calendar data from CONFIG
+        bluesound = get_powernode()
+
+        return jsonify({
+            "title": "Bluesound",
+            "icon": "🎵",
+            "data": bluesound
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @routes.route("/ruter", methods=["GET"])
 def ruter():

@@ -24,8 +24,9 @@ def widgets():
         {"endpoint": "/weather"},
         {"endpoint": "/calendar"},
         {"endpoint": "/waste"},
-        {"endpoint": "/dinner"},
+        #{"endpoint": "/dinner"},
         {"endpoint": "/lights"},
+        {"endpoint": "/music"},
         {"endpoint": "/energy"},
         {"endpoint": "/network"},        
         {"endpoint": "/ruter"}
