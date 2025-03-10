@@ -18,20 +18,38 @@ def get_tibber(token):
     payload = {
         "query": """
         {
-            viewer {
-                homes {
-                    currentSubscription {
-                        priceInfo {
-                            current {
-                                total
-                                energy
-                                tax
-                                startsAt
-                            }
-                        }
-                    }
+        viewer {
+            homes {
+            timeZone
+            address {
+                address1
+                postalCode
+                city
+            }
+            consumption(resolution: DAILY, last: 3) {
+                nodes {
+                from
+                to
+                cost
+                unitPrice
+                unitPriceVAT
+                consumption
+                consumptionUnit
                 }
             }
+            currentSubscription {
+                status
+                priceInfo {
+                current {
+                    total
+                    energy
+                    tax
+                    startsAt
+                }
+                }
+            }
+            }
+        }
         }
         """
     }
