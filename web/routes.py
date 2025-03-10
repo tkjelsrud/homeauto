@@ -5,6 +5,7 @@ from integration.calendar import get_calendar
 from integration.weather import get_weather
 from integration.lights import get_zones
 from integration.dinner import get_dinner
+from integration.energy import get_tibber
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -89,6 +90,7 @@ def dinner():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
 @routes.route("/weather", methods=["GET"])
 def weather():
     try:
@@ -99,6 +101,21 @@ def weather():
             "title": "Været",
             "icon": "🌤",
             "data": weather_data['data']
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@routes.route("/energy", methods=["GET"])
+def energy():
+    try:
+        # Fetch and parse calendar data from CONFIG
+        energy_data = get_tibber(CONFIG['TIBBER_TOKEN'])
+
+        return jsonify({
+            "title": "Strøm",
+            "icon": "⚡",
+            "data": energy_data['data']
         })
 
     except Exception as e:
