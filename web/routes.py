@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 import subprocess
-from config import CONFIG
+from web.config import CONFIG
 import requests
 import icalendar
 from datetime import datetime, timezone, date, timedelta
