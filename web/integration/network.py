@@ -1,5 +1,6 @@
 import subprocess
 import re
+import time
 
 network_cache = {
     "devices": [],
