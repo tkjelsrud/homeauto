@@ -18,28 +18,36 @@ def run_command(command):
         return str(e)
 
 def get_network():
-    """Scans the network using nmap and returns a list of active devices with vendor names."""
+    """Scans the network using nmap and returns all active devices with vendor names."""
     
     # ✅ 1️⃣ Check cache
     current_time = time.time()
     if current_time - network_cache["last_updated"] < CACHE_DURATION:
         return network_cache["devices"]
 
-    # ✅ 2️⃣ Run `nmap` to find active devices (IP, MAC, and Vendor)
+    # ✅ 2️⃣ Run `nmap` to find active devices (IP, MAC, Vendor)
     nmap_output = run_command("sudo nmap -sn 192.168.10.0/24")
 
     devices = []
     current_device = {}
 
-    # ✅ 3️⃣ Parse `nmap` output
+    # ✅ 3️⃣ Parse `nmap` output (Ensure all devices are captured)
     for line in nmap_output.split("\n"):
-        ip_match = re.search(r"Nmap scan report for (\d+\.\d+\.\d+\.\d+)", line)
+        ip_match = re.search(r"Nmap scan report for (.+?) \((\d+\.\d+\.\d+\.\d+)\)", line)
         mac_match = re.search(r"MAC Address: ([A-F0-9:]+) \((.*?)\)", line)
 
         if ip_match:
-            if current_device:  # Store previous entry
+            if current_device:  # Store previous device before starting a new one
                 devices.append(current_device)
-            current_device = {"ip": ip_match.group(1), "status": "Up", "mac": "Unknown", "vendor": "Unknown"}
+
+            device_name, ip = ip_match.groups()
+            current_device = {
+                "ip": ip,
+                "name": device_name,
+                "status": "Up",
+                "mac": "Unknown",
+                "vendor": "Unknown"
+            }
 
         if mac_match:
             current_device["mac"] = mac_match.group(1)
