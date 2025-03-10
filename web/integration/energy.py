@@ -1,4 +1,7 @@
 import requests
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def get_tibber(token):
     """
@@ -42,6 +45,8 @@ def get_tibber(token):
         data = response.json()
         if not data:
             return {"error": "Empty API response"}
+
+        logging.info(data)  # ✅ Now this will be logged
 
         # Safely extract data using `.get()` to avoid `NoneType` errors
         viewer = data.get("data", {}).get("viewer", {})
