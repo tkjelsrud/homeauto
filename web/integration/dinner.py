@@ -36,19 +36,19 @@ def get_dinner(DINNERURL):
 
             if shorthand == "VIKTIG":
                 logging.info(f"🔍 VIKTIG funnet: {description}") 
-            
-            # Determine if "T" is Tuesday or Thursday
-            if shorthand == "T":
-                if "O" not in [e["shorthand"] for e in entries]:  
-                    shorthand = "T"  # First "T" is Tuesday
-                else:
-                    shorthand = "T2"  # Second "T" is Thursday
+            else:
+                # Determine if "T" is Tuesday or Thursday
+                if shorthand == "T":
+                    if "O" not in [e["shorthand"] for e in entries]:  
+                        shorthand = "T"  # First "T" is Tuesday
+                    else:
+                        shorthand = "T2"  # Second "T" is Thursday
 
-            entries.append({
-                "shorthand": shorthand,
-                "day": day_map[shorthand],  # Convert to full day name
-                "description": description
-            })
+                entries.append({
+                    "shorthand": shorthand,
+                    "day": day_map[shorthand],  # Convert to full day name
+                    "description": description
+                })
         else:
             if len(entries) > 0:
                 # We have found some days, so we stop now
