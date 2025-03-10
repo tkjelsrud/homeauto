@@ -96,8 +96,8 @@
                 iframe.src = widgetData.iframe;
                 widgetDiv.appendChild(iframe);
             } else {
-                const ph = document.createElement("h3");
-                ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                const ph = document.createElement("div");
+                ph.innerHTML = `<span class="icon">${widgetData.icon}</span> <h3>${widgetData.title}</h3>`;
                 widgetDiv.appendChild(ph);
 
                 if(widget.endpoint === "/weather") {
