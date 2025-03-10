@@ -17,8 +17,8 @@
         }
 
         /*
-        #88B252
-        #EEC14D
+            #88B252
+            #EEC14D
         */
 
         #header {
@@ -63,20 +63,19 @@
             const widgetDiv = document.createElement("div");
             widgetDiv.classList.add("widget");
 
-            const title = document.createElement("h3");
-            title.innerText = data.title;
-            widgetDiv.appendChild(title);
-
             if (data.iframe) {
                 const iframe = document.createElement("iframe");
                 iframe.src = data.iframe;
                 widgetDiv.appendChild(iframe);
             } else {
+                const title = document.createElement("h3");
+                title.innerText = data.title;
+                widgetDiv.appendChild(title);
+
                 const content = document.createElement("p");
                 content.innerText = data.content;
                 widgetDiv.appendChild(content);
             }
-
             document.getElementById("main").appendChild(widgetDiv);
         }
     }
