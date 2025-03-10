@@ -44,6 +44,8 @@ def get_tibber(token):
 
         data = response.json()
 
+        logging.info(data)
+
         # Extracting relevant data
         homes = data.get("data", {}).get("viewer", {}).get("homes", [])
         if not homes:
