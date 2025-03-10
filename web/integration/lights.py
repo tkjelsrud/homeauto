@@ -26,7 +26,7 @@ def get_zones(HUEHOST, APIKEY):
                 "id": zone_id,
                 "name": zone_name,
                 "num_lights": num_lights,
-                "status": "On" if is_on else "Off"
+                "status": "on" if is_on else "off"
             })
 
         return zones
