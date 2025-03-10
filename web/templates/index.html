@@ -217,6 +217,20 @@
 
                     widgetDiv.appendChild(list);
                 }
+                else if(widget.endpoint === "/network") {
+                    const list = document.createElement("div");
+                    
+                    we = widgetData.data;
+
+                    we.forEach(item => {
+                        let listItem = document.createElement("div");
+                        listItem.classList.add("float", (item.status == "Online" ? "on": "off"));
+                        listItem.innerHTML = `${item.vendor}`;
+                        list.appendChild(listItem);
+                    });
+
+                    widgetDiv.appendChild(list);
+                }
                 else {
                     if (widgetData.data) {
                         if (Array.isArray(widgetData.data)) {
