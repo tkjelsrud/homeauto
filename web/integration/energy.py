@@ -56,9 +56,3 @@ def get_tibber(token):
     
     except requests.RequestException as e:
         return {"error": f"Request error: {str(e)}"}
-
-# Example Usage:
-TIBBER_TOKEN = "your_tibber_api_token_here"
-price_data = fetch_tibber_price(TIBBER_TOKEN)
-
-print(price_data)  # ✅ Prints structured price data
