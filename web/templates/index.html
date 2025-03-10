@@ -141,8 +141,179 @@
         return date.toLocaleDateString("nb-NO", { weekday: "short" }); // "Sun"
     }
 
-
     async function loadWidgets() {
+        const response = await fetch("/widgets"); // Get list of widgets
+        const widgets = await response.json();
+
+        for (const widget of widgets) {
+            await updateWidget(widget.endpoint); // Initial load
+        });
+    }
+
+    async function updateWidget(endpoint) {
+        try {
+            const response = await fetch(endpoint);
+            const widgetData = await response.json();
+            
+            const widgetId = `widget-${endpoint.replace("/", "")}`; // Generate ID from endpoint
+            let widgetDiv = document.getElementById(widgetId);
+
+            if (!widgetDiv) {
+                // Create widget container if it doesn't exist
+                widgetDiv = document.createElement("div");
+                widgetDiv.id = widgetId;
+                widgetDiv.classList.add("widget");
+                document.getElementById("widgets-container").appendChild(widgetDiv);
+            }
+
+            // Update widget content dynamically
+            if (widgetData.iframe) {
+                const iframe = document.createElement("iframe");
+                iframe.src = widgetData.iframe;
+                widgetDiv.appendChild(iframe);
+            } else {
+                const ph = document.createElement("div");
+                ph.classList.add('title');
+                ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                widgetDiv.appendChild(ph);
+
+                if(endpoint === "/weather") {
+                    const list = document.createElement("div");
+
+                    we = widgetData.data.instant.details;
+                    let listItem = document.createElement("div");
+                    listItem.classList.add("float", "biggar", "active");
+                    listItem.innerHTML = `${we.air_temperature}° ${getCustomWeatherIcon(widgetData.data.next_1_hours.summary.symbol_code)}`;
+                    list.appendChild(listItem);
+
+                    // next_1_hours
+                    we = widgetData.data.next_1_hours;
+                    listItem = document.createElement("div");
+                    listItem.classList.add("float", "big");
+                    listItem.innerHTML = `1 time: ${getCustomWeatherIcon(we.summary.symbol_code)}`;
+                    list.appendChild(listItem);
+
+                    we = widgetData.data.next_6_hours;
+                    listItem = document.createElement("div");
+                    listItem.classList.add("float", "big");
+                    listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code)}`;
+                    list.appendChild(listItem);
+                    
+                    widgetDiv.appendChild(list);
+                }
+                else if(endpoint === "/calendar") {
+                    const list = document.createElement("ul");
+                    widgetData.data.forEach(item => {
+                        const listItem = document.createElement("li");
+                        const eventDate = new Date(item.start).toISOString().split("T")[0]; // Get YYYY-MM-DD
+                        const todayDate = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+
+                        // Add class if not today
+                        if (eventDate !== todayDate) {
+                            listItem.classList.add("subdue");
+                        }
+                        listItem.innerHTML = `<p><span class="add">${item.start}:</span> ${item.summary}</p>`;
+                        list.appendChild(listItem);
+                    });
+                    widgetDiv.appendChild(list);
+                }
+                else if(endpoint === "/lights") {
+                    const list = document.createElement("div");
+                    widgetData.data.forEach(item => {
+                        const listItem = document.createElement("div");
+                        listItem.classList.add(item.status.toLowerCase());
+                        listItem.classList.add("float");
+                        listItem.innerHTML = `${item.name} (${item.num_lights} lys)`;
+                        list.appendChild(listItem);
+                    });
+                    widgetDiv.appendChild(list);
+                }
+                else if(endpoint === "/energy") {
+                    const list = document.createElement("div");
+                    
+                    we = widgetData.data;
+                    let listItem = document.createElement("div");
+                    listItem.classList.add("float", "biggar", "active");
+                    listItem.innerHTML = `${we.total.toFixed(2)}kr <span class="subdue">/kw</span>`;
+                    list.appendChild(listItem);
+
+                    we.consumption.forEach(item => {
+                        let listItem = document.createElement("div");
+                        listItem.classList.add("float", "off");
+                        listItem.innerHTML = `<span class="add">${getShortDay(item.from)}:</span> ${item.cost.toFixed(2)}kr (${item.consumption} kWh)`;
+                        list.appendChild(listItem);
+                    });
+
+                    widgetDiv.appendChild(list);
+                }
+                else if(endpoint === "/network") {
+                    const list = document.createElement("div");
+                    
+                    we = widgetData.data;
+
+                    we.forEach(item => {
+                        let listItem = document.createElement("div");
+                        listItem.classList.add("float", (item.status == "Up" ? "on": "off"));
+                        var name = item.name.replace(".home", "");
+                        listItem.innerHTML = `${name} (${item.vendor})`;
+                        list.appendChild(listItem);
+                    });
+
+                    widgetDiv.appendChild(list);
+                }
+                else if(endpoint === "/music") {
+                    const list = document.createElement("ul");
+
+                    we = widgetData.data;
+                    
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = `<p>${we.title}: ${we.state} | Volume: ${we.volume} <span="subdue">(${we.db} db)</span></p>`;
+                    list.appendChild(listItem);
+
+                    widgetDiv.appendChild(list);
+                }
+                else {
+                    if (widgetData.data) {
+                        if (Array.isArray(widgetData.data)) {
+                            // 📌 If data is an array (e.g., Calendar)
+                            const list = document.createElement("ul");
+                            widgetData.data.forEach(item => {
+                                const listItem = document.createElement("li");
+                                listItem.innerText = `${item.summary} - ${item.start}`;
+                                list.appendChild(listItem);
+                            });
+                            widgetDiv.appendChild(list);
+                        } else if (typeof widgetData.data === "object") {
+                            // 📌 If data is an object (e.g., Weather)
+                            Object.entries(widgetData.data).forEach(([key, value]) => {
+                                const p = document.createElement("p");
+                                p.innerText = `${key.replace(/_/g, " ")}: ${value}`;
+                                widgetDiv.appendChild(p);
+                            });
+                        } else {
+                            // 📌 Default text format
+                            const p = document.createElement("p");
+                            p.innerText = widgetData.data;
+                            widgetDiv.appendChild(p);
+                        }
+                    }
+                }
+            }
+
+            // Refresh at specified interval (default to 30s if missing)
+            const refreshRate = (data.refresh || 30) * 1000;
+
+            // Clear previous interval and set new one
+            if (widgetDiv.refreshInterval) clearTimeout(widgetDiv.refreshInterval);
+            widgetDiv.refreshInterval = setTimeout(() => updateWidget(endpoint), refreshRate);
+            
+        } catch (error) {
+            console.error(`Error loading ${endpoint}:`, error);
+        }
+    }
+
+
+    async function loadWidgetsXX() {
         const response = await fetch("/widgets"); // Get list of widgets
         const widgets = await response.json();
 

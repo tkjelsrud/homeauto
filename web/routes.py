@@ -13,6 +13,14 @@ from integration.bluesound import get_powernode
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
 
+def api_response(title, icon, data, refresh=30):
+    return jsonify({
+        "title": title,
+        "icon": icon,
+        "data": data,
+        "refresh": refresh  # Default 30s unless overridden
+    })
+
 @routes.route("/memory", methods=["GET"])
 def check_memory():
     try:
@@ -38,11 +46,7 @@ def check_memory():
         }
 
 
-        return jsonify({
-            "title": "Minne",
-            "icon": "🖥",
-            "data": memory_info
-        })
+        return api_response("Ressurser", "🖥", memory_info, 10)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -55,11 +59,7 @@ def calendar():
 
         sorted_events = sorted(calendar_data, key=lambda x: x["start"], reverse=False)
 
-        return jsonify({
-            "title": "Kalender",
-            "icon": "📅",
-            "data": sorted_events
-        })
+        return api_response("Kalender", "📅", sorted_events, 60*60)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -70,11 +70,7 @@ def lights():
         # Fetch and parse calendar data from CONFIG
         zone_data = get_zones(CONFIG['PHILIPSHUE_HOST'], CONFIG['PHILIPSHUE_KEY'])
 
-        return jsonify({
-            "title": "Lys",
-            "icon": "✨",
-            "data": zone_data
-        })
+        return api_response("Lys", "✨", zone_data, 20)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -85,11 +81,7 @@ def dinner():
         # Fetch and parse calendar data from CONFIG
         dinner_data = get_dinner(CONFIG['DINNERURL'])
 
-        return jsonify({
-            "title": "Middager",
-            "icon": "🍽️",
-            "data": dinner_data
-        })
+        return api_response("Middager",  "🍽️", dinner_data, 360)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -100,11 +92,7 @@ def weather():
         # Fetch and parse calendar data from CONFIG
         weather_data = get_weather(CONFIG['LAT'], CONFIG['LON'])
 
-        return jsonify({
-            "title": "Været",
-            "icon": "🌤",
-            "data": weather_data['data']
-        })
+        return api_response("Været", "🌤", weather_data['data'])
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -118,11 +106,7 @@ def energy():
         if "error" in energy_data:
             return jsonify(energy_data), 500  # Return proper HTTP status
 
-        return jsonify({
-            "title": "Strøm",
-            "icon": "⚡",
-            "data": energy_data
-        })
+        return api_response("Strøm", "⚡", energy_data, 60)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -133,11 +117,7 @@ def waste():
         # Fetch and parse calendar data from CONFIG
         garbage_schedule = get_garbage()
 
-        return jsonify({
-            "title": "Søppelhenting",
-            "icon": "♻️",
-            "data": garbage_schedule
-        })
+        return api_response("Søppelhenting", "♻️", garbage_schedule)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -148,11 +128,7 @@ def network():
         # Fetch and parse calendar data from CONFIG
         network = get_network()
 
-        return jsonify({
-            "title": "Nettverk",
-            "icon": "🌐",
-            "data": network
-        })
+        return api_response("Nettverk", "🌐", network, 120)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -163,11 +139,7 @@ def bluesound():
         # Fetch and parse calendar data from CONFIG
         bluesound = get_powernode()
 
-        return jsonify({
-            "title": "Bluesound",
-            "icon": "🎵",
-            "data": bluesound
-        })
+        return api_response("Bluesound", "🎵", bluesound, 10)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
