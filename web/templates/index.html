@@ -225,7 +225,7 @@
                     we.forEach(item => {
                         let listItem = document.createElement("div");
                         listItem.classList.add("float", (item.status == "Up" ? "on": "off"));
-                        listItem.innerHTML = `${item.vendor}`;
+                        listItem.innerHTML = `${item.name} (${item.vendor})`;
                         list.appendChild(listItem);
                     });
 
