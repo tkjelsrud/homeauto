@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, render_template
+from flask import Flask, send_from_directory, render_template, jsonify
 from routes import routes
 from config import CONFIG
 
@@ -17,6 +17,15 @@ def pihole_css(filename):
 @app.route("/pihole/img/<path:filename>")
 def pihole_img(filename):
     return send_from_directory("/var/www/html/admin/img", filename)
+
+@app.route("/widgets")
+def widgets():
+    return jsonify([
+        {"endpoint": "/weather"},
+        {"endpoint": "/calendar"},
+        {"endpoint": "/memory"},
+        {"endpoint": "/ruter"}
+    ])
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

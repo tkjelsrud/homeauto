@@ -6,10 +6,19 @@
         body {
             height: auto;
             min-height: 100%;
-            background-color: #272c30;
+            background-color: #2E2E2E;
             color: #fff;
             font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
+
+        p, h3 {
+            color: #88B252;
+        }
+
+        /*
+        #88B252
+        #EEC14D
+        */
 
         #header {
             background-color: #353c42;
@@ -18,8 +27,43 @@
 </head>
 <body>
    <div id="header">
-    Header
+    Header | Option 1 | Option 2
    </div>
+   <div id="main">
+   </div>
+
+   <script>
+    async function loadWidgets() {
+        const response = await fetch("/widgets"); // Get list of widgets
+        const widgets = await response.json();
+
+        for (const widget of widgets) {
+            const dataResponse = await fetch(widget.endpoint);
+            const data = await dataResponse.json();
+
+            const widgetDiv = document.createElement("div");
+            widgetDiv.classList.add("widget");
+
+            const title = document.createElement("h3");
+            title.innerText = data.title;
+            widgetDiv.appendChild(title);
+
+            if (data.iframe) {
+                const iframe = document.createElement("iframe");
+                iframe.src = data.iframe;
+                widgetDiv.appendChild(iframe);
+            } else {
+                const content = document.createElement("p");
+                content.innerText = data.content;
+                widgetDiv.appendChild(content);
+            }
+
+            document.getElementById("main").appendChild(widgetDiv);
+        }
+    }
+
+    loadWidgets();
+</script>
     
 </body>
 </html>

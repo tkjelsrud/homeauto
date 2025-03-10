@@ -32,7 +32,10 @@ def check_memory():
         }
 
 
-        return jsonify(memory_info)
+        return jsonify({
+            "title": "🖥 Minne",
+            "data": memory_info
+        })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -41,9 +44,12 @@ def check_memory():
 def calendar():
     try:
         # Fetch and parse calendar data from CONFIG
-        json = get_calendar(CONFIG['calendar'])
+        calendar_data = get_calendar(CONFIG['calendar'])
 
-        return json
+        return jsonify({
+            "title": "📅 Kalender",
+            "data": calendar_data
+        })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -52,9 +58,12 @@ def calendar():
 def weather():
     try:
         # Fetch and parse calendar data from CONFIG
-        json = get_weather(CONFIG['LAT'], CONFIG['LON'])
+        weather_data = get_weather(CONFIG['LAT'], CONFIG['LON'])
 
-        return json
+        return jsonify({
+            "title": "🌤 Været",
+            "data": weather_data
+        })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -62,5 +71,6 @@ def weather():
 @routes.route("/ruter", methods=["GET"])
 def ruter():
     return jsonify({
+        "title": "🚌 Buss: Stig",
         "iframe_url": CONFIG['RUTER']
     })
