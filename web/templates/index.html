@@ -166,6 +166,8 @@
                 document.getElementById("main").appendChild(widgetDiv);
             }
 
+            widgetDiv.innerHTML = "";
+
             // Update widget content dynamically
             if (widgetData.iframe) {
                 const iframe = document.createElement("iframe");
