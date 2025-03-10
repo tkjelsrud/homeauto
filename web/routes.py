@@ -13,7 +13,10 @@ from integration.bluesound import get_powernode
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
 
-def api_response(title, icon, data, refresh=30):
+HOUR = 60 * 60
+MINUTE = 60
+
+def api_response(title, icon, data, refresh=1 * MINUTE):
     return jsonify({
         "title": title,
         "icon": icon,
@@ -59,7 +62,7 @@ def calendar():
 
         sorted_events = sorted(calendar_data, key=lambda x: x["start"], reverse=False)
 
-        return api_response("Kalender", "📅", sorted_events, 60*60)
+        return api_response("Kalender", "📅", sorted_events, 10 * MINUTE)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -70,7 +73,7 @@ def lights():
         # Fetch and parse calendar data from CONFIG
         zone_data = get_zones(CONFIG['PHILIPSHUE_HOST'], CONFIG['PHILIPSHUE_KEY'])
 
-        return api_response("Lys", "✨", zone_data, 20)
+        return api_response("Lys", "✨", zone_data, 30)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -81,7 +84,7 @@ def dinner():
         # Fetch and parse calendar data from CONFIG
         dinner_data = get_dinner(CONFIG['DINNERURL'])
 
-        return api_response("Middager",  "🍽️", dinner_data, 360)
+        return api_response("Middager",  "🍽️", dinner_data, HOUR)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -106,7 +109,7 @@ def energy():
         if "error" in energy_data:
             return jsonify(energy_data), 500  # Return proper HTTP status
 
-        return api_response("Strøm", "⚡", energy_data, 60)
+        return api_response("Strøm", "⚡", energy_data, MINUTE)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -117,7 +120,7 @@ def waste():
         # Fetch and parse calendar data from CONFIG
         garbage_schedule = get_garbage()
 
-        return api_response("Søppelhenting", "♻️", garbage_schedule)
+        return api_response("Søppelhenting", "♻️", garbage_schedule, HOUR)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -128,7 +131,7 @@ def network():
         # Fetch and parse calendar data from CONFIG
         network = get_network()
 
-        return api_response("Nettverk", "🌐", network, 120)
+        return api_response("Nettverk", "🌐", network, MINUTE * 5)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
