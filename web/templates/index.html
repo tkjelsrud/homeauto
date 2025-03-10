@@ -106,6 +106,12 @@
             margin: 0;
         }
 
+        li {
+            margin-bottom: 2px; /* Reduce space between items */
+            padding: 2px 0; /* Fine-tune spacing */
+            line-height: 1.2; /* Adjust text spacing */
+        }
+
         .situation {
             padding: 0 !important;
         }
@@ -282,21 +288,24 @@
                         list.appendChild(listItem);
                     }
 
+                    maxDays = 5;
                     widgetData.data.days.forEach(item => {
-                        const listItem = document.createElement("li");
-                        const eventDate = item.date.split(" ")[0]; // "2025-03-10"
-                        const todayDate = new Date().toISOString().split("T")[0];
+                        if(maxDays-- > 0) {
+                            const listItem = document.createElement("li");
+                            const eventDate = item.date.split(" ")[0]; // "2025-03-10"
+                            const todayDate = new Date().toISOString().split("T")[0];
 
-                        // Debugging
-                        console.log(`Event Date: ${eventDate}, Today: ${todayDate}`);
+                            // Debugging
+                            console.log(`Event Date: ${eventDate}, Today: ${todayDate}`);
 
-                        // Add class if not today
-                        if (eventDate !== todayDate) {
-                            listItem.classList.add("subdue");
+                            // Add class if not today
+                            if (eventDate !== todayDate) {
+                                listItem.classList.add("subdue");
+                            }
+
+                            listItem.innerHTML = `<p><span class="add">${eventDate}:</span> ${item.description}</p>`;
+                            list.appendChild(listItem);
                         }
-
-                        listItem.innerHTML = `<p><span class="add">${eventDate}:</span> ${item.description}</p>`;
-                        list.appendChild(listItem);
                     });
                     widgetDiv.appendChild(list);
                 }
