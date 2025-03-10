@@ -62,14 +62,14 @@
 
         for (const widget of widgets) {
             const dataResponse = await fetch(widget.endpoint);
-            const data = await dataResponse.json();
+            const widget = await dataResponse.json();
 
             const widgetDiv = document.createElement("div");
             widgetDiv.classList.add("widget");
 
-            if (data.iframe) {
+            if (widget.iframe) {
                 const iframe = document.createElement("iframe");
-                iframe.src = data.iframe;
+                iframe.src = widget.iframe;
                 widgetDiv.appendChild(iframe);
             } else {
                 if (widget.data) {
