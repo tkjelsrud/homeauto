@@ -87,20 +87,19 @@
                 iframe.src = widgetData.iframe;
                 widgetDiv.appendChild(iframe);
             } else {
-                if(widget.endpoint == "/weather") {
+                if(widget.endpoint === "/weather") {
                     const list = document.createElement("ul");
+                    const listItem = document.createElement("li");
 
-                    widgetData.data.forEach(item => {
-                        const listItem = document.createElement("li");
-                        if(item.summary) {
-                            listItem.innerText = `${getCustomWeatherIcon(item.summary.symbol_code)}`;
-                        }
-                        
-                        //
-                        //
+                    // ✅ Correctly get `symbol_code`
+                    if (widgetData.data.symbol_code) {
+                        listItem.innerHTML = `${getCustomWeatherIcon(widgetData.data.symbol_code)} 
+                                            ${widgetData.data.air_temperature}°C`;
+                    } else {
+                        listItem.innerText = "Weather data unavailable";
+                    }
 
-                        list.appendChild(listItem);
-                    });
+                    list.appendChild(listItem);
                     widgetDiv.appendChild(list);
                 }
                 else {
