@@ -132,18 +132,27 @@
                 widgetDiv.appendChild(ph);
 
                 if(widget.endpoint === "/weather") {
-                    const list = document.createElement("ul");
-                    const listItem = document.createElement("li");
+                    const list = document.createElement("div");
 
-                    // ✅ Correctly get `symbol_code`
-                    if (widgetData.data.symbol_code) {
-                        listItem.innerHTML = `${getCustomWeatherIcon(widgetData.data.symbol_code)} 
-                                            ${widgetData.data.air_temperature}°C`;
-                    } else {
-                        listItem.innerText = "Weather data unavailable";
-                    }
-
+                    we = widgetData.data.instant.details;
+                    let listItem = document.createElement("div");
+                    listItem.classList.add("float");
+                    listItem.innerHTML = `${we.air_temperature} ${we.wind_speed}`;
                     list.appendChild(listItem);
+
+                    // next_1_hours
+                    we = widgetData.data.next_1_hours;
+                    listItem = document.createElement("div");
+                    listItem.classList.add("float");
+                    listItem.innerHTML = `${getCustomWeatherIcon(we.summary.symbol_code)}`;
+                    list.appendChild(listItem);
+
+                    we = widgetData.data.next_6_hours;
+                    listItem = document.createElement("div");
+                    listItem.classList.add("float");
+                    listItem.innerHTML = `${getCustomWeatherIcon(we.summary.symbol_code)}`;
+                    list.appendChild(listItem);
+                    
                     widgetDiv.appendChild(list);
                 }
                 else if(widget.endpoint === "/calendar") {
@@ -163,7 +172,7 @@
                     widgetDiv.appendChild(list);
                 }
                 else if(widget.endpoint === "/lights") {
-                    const list = document.createElement("div")
+                    const list = document.createElement("div");
                     widgetData.data.forEach(item => {
                         const listItem = document.createElement("div");
                         listItem.classList.add(item.status.toLowerCase());
