@@ -23,6 +23,7 @@ def widgets():
     return jsonify([
         {"endpoint": "/weather"},
         {"endpoint": "/calendar"},
+        {"endpoint": "/dinner"},
         {"endpoint": "/lights"},
         {"endpoint": "/ruter"}
     ])

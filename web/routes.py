@@ -4,6 +4,7 @@ from config import CONFIG
 from integration.calendar import get_calendar
 from integration.weather import get_weather
 from integration.lights import get_zones
+from integration.dinner import get_dinner
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -74,6 +75,20 @@ def lights():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@routes.route("/dinner", methods=["GET"])
+def dinner():
+    try:
+        # Fetch and parse calendar data from CONFIG
+        dinner_data = get_dinner(CONFIG['DINNERURL'])
+
+        return jsonify({
+            "title": "Middager",
+            "icon": "🍽️",
+            "data": dinner_data
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 @routes.route("/weather", methods=["GET"])
 def weather():
     try:
