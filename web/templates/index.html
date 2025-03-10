@@ -130,7 +130,7 @@
                     const list = document.createElement("ul");
                     widgetData.data.forEach(item => {
                         const listItem = document.createElement("li");
-                        listItem.innerText = `<span class="add">${item.start}:</span> ${item.summary}`;
+                        listItem.innerHTML = `<p><span class="add">${item.start}:</span> ${item.summary}</p>`;
                         list.appendChild(listItem);
                     });
                     widgetDiv.appendChild(list);
