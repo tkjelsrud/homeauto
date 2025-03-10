@@ -112,6 +112,9 @@ def energy():
         # Fetch and parse calendar data from CONFIG
         energy_data = get_tibber(CONFIG['TIBBER_TOKEN'])
 
+        if "error" in energy_data:
+            return jsonify(energy_data), 500  # Return proper HTTP status
+
         return jsonify({
             "title": "Strøm",
             "icon": "⚡",
