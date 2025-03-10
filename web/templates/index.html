@@ -81,19 +81,19 @@
                             listItem.innerText = `${item.summary} - ${item.start}`;
                             list.appendChild(listItem);
                         });
-                        container.appendChild(list);
+                        widgetDiv.appendChild(list);
                     } else if (typeof widgetData.data === "object") {
                         // 📌 If data is an object (e.g., Weather)
                         Object.entries(widgetData.data).forEach(([key, value]) => {
                             const p = document.createElement("p");
                             p.innerText = `${key.replace(/_/g, " ")}: ${value}`;
-                            container.appendChild(p);
+                            widgetDiv.appendChild(p);
                         });
                     } else {
                         // 📌 Default text format
                         const p = document.createElement("p");
                         p.innerText = widgetData.data;
-                        container.appendChild(p);
+                        widgetDiv.appendChild(p);
                     }
                 }
             }
