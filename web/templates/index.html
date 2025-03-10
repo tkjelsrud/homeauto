@@ -6,12 +6,12 @@
         body {
             height: auto;
             min-height: 100%;
-            background-color: #2E2E2E;
+            background-color: #0E0F15;
             color: #fff;
             font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
 
-        p, h3 {
+        h3 {
             color: #88B252;
             text-decoration: underline;
         }
@@ -72,13 +72,30 @@
                 iframe.src = data.iframe;
                 widgetDiv.appendChild(iframe);
             } else {
-                const title = document.createElement("h3");
-                title.innerText = data.title;
-                widgetDiv.appendChild(title);
-
-                const content = document.createElement("p");
-                content.innerText = data.data;
-                widgetDiv.appendChild(content);
+                if (widget.data) {
+                    if (Array.isArray(widget.data)) {
+                        // 📌 If data is an array (e.g., Calendar)
+                        const list = document.createElement("ul");
+                        widget.data.forEach(item => {
+                            const listItem = document.createElement("li");
+                            listItem.innerText = `${item.summary} - ${item.start}`;
+                            list.appendChild(listItem);
+                        });
+                        container.appendChild(list);
+                    } else if (typeof widget.data === "object") {
+                        // 📌 If data is an object (e.g., Weather)
+                        Object.entries(widget.data).forEach(([key, value]) => {
+                            const p = document.createElement("p");
+                            p.innerText = `${key.replace(/_/g, " ")}: ${value}`;
+                            container.appendChild(p);
+                        });
+                    } else {
+                        // 📌 Default text format
+                        const p = document.createElement("p");
+                        p.innerText = widget.data;
+                        container.appendChild(p);
+                    }
+                }
             }
             document.getElementById("main").appendChild(widgetDiv);
         }
