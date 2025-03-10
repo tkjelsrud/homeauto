@@ -146,9 +146,9 @@
                     widgetDiv.appendChild(list);
                 }
                 else if(widget.endpoint === "/lights") {
-                    const list = document.createElement("ul");
+                    const list = document.createElement("div")
                     widgetData.data.forEach(item => {
-                        const listItem = document.createElement("li");
+                        const listItem = document.createElement("div");
                         listItem.classList.add(item.status.toLowerCase());
                         listItem.innerHTML = `${item.name} (${item.num_lights} lys)`;
                         list.appendChild(listItem);
