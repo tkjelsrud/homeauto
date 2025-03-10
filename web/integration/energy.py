@@ -35,24 +35,36 @@ def get_tibber(token):
 
     try:
         response = requests.post(url, json=payload, headers=headers)
-        
-        if response.status_code == 200:
-            data = response.json()
-            
-            # Extract relevant price details
-            homes = data.get("data", {}).get("viewer", {}).get("homes", [])
-            if homes and "currentSubscription" in homes[0]:
-                price_info = homes[0]["currentSubscription"]["priceInfo"]["current"]
-                return {
-                    "total": price_info["total"],
-                    "energy": price_info["energy"],
-                    "tax": price_info["tax"],
-                    "timestamp": price_info["startsAt"]
-                }
-            else:
-                return {"error": "No price data available"}
-        else:
+
+        if response.status_code != 200:
             return {"error": f"API request failed with status {response.status_code}"}
-    
+        
+        data = response.json()
+        if not data:
+            return {"error": "Empty API response"}
+
+        # Safely extract data using `.get()` to avoid `NoneType` errors
+        viewer = data.get("data", {}).get("viewer", {})
+        homes = viewer.get("homes", [])
+
+        if not homes:
+            return {"error": "No home data found in Tibber API response"}
+
+        subscription = homes[0].get("currentSubscription", {})
+        if not subscription:
+            return {"error": "No current subscription data found"}
+
+        price_info = subscription.get("priceInfo", {}).get("current", {})
+        if not price_info:
+            return {"error": "No current price data available"}
+
+        # ✅ Successfully extracted price data
+        return {
+            "total": price_info.get("total", "N/A"),
+            "energy": price_info.get("energy", "N/A"),
+            "tax": price_info.get("tax", "N/A"),
+            "timestamp": price_info.get("startsAt", "N/A")
+        }
+
     except requests.RequestException as e:
         return {"error": f"Request error: {str(e)}"}
