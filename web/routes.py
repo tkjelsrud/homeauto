@@ -42,5 +42,7 @@ def calendar():
         # Fetch and parse calendar data from CONFIG
         json = get_calendar(CONFIG['calendar'])
 
+        return json
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
