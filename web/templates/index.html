@@ -36,7 +36,7 @@
             margin: 10px;
             border-radius: 8px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            width: 320px;
         }
         .icon {
             font-size: 12px;
@@ -96,11 +96,17 @@
         .situation {
             padding: 0 !important;
         }
+
+        #clock {
+            font-size: 2rem;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
    <div id="header">
-    Header | Option 1 | Option 2
+    kjelpi.local | Option 1 | <span id="clock">Loading...</span>
    </div>
    <div id="main">
    </div>
@@ -264,6 +270,21 @@
     }
 
     loadWidgets();
+
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+        
+        document.getElementById("clock").textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Run once immediately
+    updateClock();
+
+    // Update every second
+    setInterval(updateClock, 1000);
 </script>
     
 </body>
