@@ -6,6 +6,7 @@ from integration.weather import get_weather
 from integration.lights import get_zones
 from integration.dinner import get_dinner
 from integration.energy import get_tibber
+from integration.waste import get_garbage
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -123,6 +124,22 @@ def energy():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@routes.route("/waste", methods=["GET"])
+def waste():
+    try:
+        # Fetch and parse calendar data from CONFIG
+        garbage_schedule = get_garbage()
+
+        return jsonify({
+            "title": "Søppelhenting",
+            "icon": "♻️",
+            "data": garbage_schedule
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @routes.route("/ruter", methods=["GET"])
 def ruter():
