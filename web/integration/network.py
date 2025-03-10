@@ -11,24 +11,19 @@ def run_command(command):
         return str(e)
 
 def get_network():
-    """Scans the network and returns human-readable metrics."""
-
-    # ✅ 1️⃣ Run nmap first (since some routers block arp-scan)
-    nmap_output = run_command("sudo nmap -sn 192.168.10.0/24")
-    
-    # ✅ 2️⃣ Extract live IPs from nmap
-    active_ips = set(re.findall(r"Nmap scan report for (\d+\.\d+\.\d+\.\d+)", nmap_output))
-
-    # ✅ 3️⃣ Run arp-scan to get MAC addresses & vendors
-    arp_output = run_command("sudo arp-scan --localnet")
+    """Runs nmap to detect active devices on the network"""
+    command = "sudo nmap -sn 192.168.10.0/24"
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
 
     devices = []
-    arp_lines = arp_output.split("\n")
-    for line in arp_lines:
-        match = re.search(r"(\d+\.\d+\.\d+\.\d+)\s+([a-fA-F0-9:]+)\s+(.+)", line)
-        if match:
-            ip, mac, vendor = match.groups()
-            status = "Online" if ip in active_ips else "Offline"  # Cross-check nmap
-            devices.append({"ip": ip, "mac": mac, "vendor": vendor, "status": status})
+    current_ip = None
+
+    for line in result.stdout.split("\n"):
+        ip_match = re.search(r"Nmap scan report for (\d+\.\d+\.\d+\.\d+)", line)
+        if ip_match:
+            current_ip = ip_match.group(1)
+
+        if "Host is up" in line and current_ip:
+            devices.append({"ip": current_ip, "status": "Up"})
 
     return devices
