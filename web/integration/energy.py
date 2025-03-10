@@ -41,33 +41,23 @@ def get_tibber(token):
 
         if response.status_code != 200:
             return {"error": f"API request failed with status {response.status_code}"}
-        
+
         data = response.json()
-        if not data:
-            return {"error": "Empty API response"}
 
-        logging.info(data)  # ✅ Now this will be logged
-
-        # Safely extract data using `.get()` to avoid `NoneType` errors
-        viewer = data.get("data", {}).get("viewer", {})
-        homes = viewer.get("homes", [])
-
+        # Extracting relevant data
+        homes = data.get("data", {}).get("viewer", {}).get("homes", [])
         if not homes:
             return {"error": "No home data found in Tibber API response"}
 
-        subscription = homes[0].get("currentSubscription", {})
-        if not subscription:
-            return {"error": "No current subscription data found"}
+        price_info = homes[0].get("currentSubscription", {}).get("priceInfo", {}).get("current", {})
 
-        price_info = subscription.get("priceInfo", {}).get("current", {})
         if not price_info:
             return {"error": "No current price data available"}
 
-        # ✅ Successfully extracted price data
         return {
-            "total": price_info.get("total", "N/A"),
-            "energy": price_info.get("energy", "N/A"),
-            "tax": price_info.get("tax", "N/A"),
+            "total": round(price_info.get("total", 0), 4),  # Rounded for better readability
+            "energy": round(price_info.get("energy", 0), 4),
+            "tax": round(price_info.get("tax", 0), 4),
             "timestamp": price_info.get("startsAt", "N/A")
         }
 
