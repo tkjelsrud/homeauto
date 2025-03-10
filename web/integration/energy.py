@@ -82,11 +82,16 @@ def get_tibber(token):
         if price_info is None:
             return {"error": "No current price data available"}
 
+        consumption = homes[0].get("consumption")
+        if consumption is None:
+            return {"error": "No current consumption data found"}
+
         return {
             "total": round(price_info.get("total", 0), 4),
             "energy": round(price_info.get("energy", 0), 4),
             "tax": round(price_info.get("tax", 0), 4),
-            "timestamp": price_info.get("startsAt", "N/A")
+            "timestamp": price_info.get("startsAt", "N/A"),
+            "consumption": consumption
         }
 
     except requests.RequestException as e:
