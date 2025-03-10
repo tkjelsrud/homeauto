@@ -278,19 +278,23 @@
                     const list = document.createElement("ul");
                     if(widgetData.data.important != "") {
                         const listItem = document.createElement("li");
-                        listItem.innerHTML = `<p class="active">${widgetData.data.important}</p>`;
+                        listItem.innerHTML = `<span class="active">${widgetData.data.important}</span>`;
                         list.appendChild(listItem);
                     }
 
                     widgetData.data.days.forEach(item => {
                         const listItem = document.createElement("li");
-                        const eventDate = new Date(item.date).toISOString().split("T")[0]; // Get YYYY-MM-DD
-                        const todayDate = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-                        console.log("adding day:" + eventDate);
+                        const eventDate = item.date.split(" ")[0]; // "2025-03-10"
+                        const todayDate = new Date().toISOString().split("T")[0];
+
+                        // Debugging
+                        console.log(`Event Date: ${eventDate}, Today: ${todayDate}`);
+
                         // Add class if not today
                         if (eventDate !== todayDate) {
                             listItem.classList.add("subdue");
                         }
+
                         listItem.innerHTML = `<p><span class="add">${eventDate}:</span> ${item.description}</p>`;
                         list.appendChild(listItem);
                     });
