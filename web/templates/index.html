@@ -74,6 +74,9 @@
         .big {
             font-size: 16px;
         }
+        .biggar {
+            font-size: 20px;
+        }
         .subdue {
             opacity: 0.2;
         }
@@ -200,8 +203,8 @@
                     
                     we = widgetData.data;
                     let listItem = document.createElement("div");
-                    listItem.classList.add("float", "big", "active");
-                    listItem.innerHTML = `${we.total.toFixed(2)}kr<span class="add">/kw</span>`;
+                    listItem.classList.add("float", "biggar", "active");
+                    listItem.innerHTML = `${we.total.toFixed(2)}kr <span class="subdue">/kw</span>`;
                     list.appendChild(listItem);
 
                     we.consumption.forEach(item => {
