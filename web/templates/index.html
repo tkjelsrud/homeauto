@@ -108,7 +108,7 @@
                 }
                 else if(widget.endpoint === "/calendar") {
                     const list = document.createElement("ul");
-                    widgetData.data.reverse().forEach(item => {
+                    widgetData.data.forEach(item => {
                         const listItem = document.createElement("li");
                         listItem.innerText = `${item.start}: ${item.summary}`;
                         list.appendChild(listItem);

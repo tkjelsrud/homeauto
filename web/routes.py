@@ -47,10 +47,12 @@ def calendar():
         # Fetch and parse calendar data from CONFIG
         calendar_data = get_calendar(CONFIG['calendar'])
 
+        sorted_events = sorted(calendar_data, key=lambda x: x["start"], reverse=True)
+
         return jsonify({
             "title": "Kalender",
             "icon": "📅",
-            "data": calendar_data
+            "data": sorted_events
         })
 
     except Exception as e:
