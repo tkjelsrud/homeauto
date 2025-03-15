@@ -384,6 +384,15 @@
 
     // Update every second
     setInterval(updateClock, 1000);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all elements with the class "widget"
+        document.querySelectorAll(".widget").forEach(widget => {
+            widget.onclick = function () {
+                alert("Hello");
+            };
+        });
+    });
 </script>
     
 </body>
