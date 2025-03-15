@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify
-import subprocess
+from flask import Blueprint, jsonify, redirect, url_for
+import subprocess, sys, os
 from config import CONFIG
 from integration.calendar import get_calendar
 from integration.weather import get_weather
@@ -154,3 +154,20 @@ def ruter():
         "icon": "🚌",
         "iframe": CONFIG['RUTER']
     })
+
+@routes.route('/update', methods=['GET'])
+def update():
+    try:
+        # Change to your Flask app directory
+        repo_path = os.path.dirname(os.path.abspath(__file__))
+
+        # Pull the latest changes
+        subprocess.run(["git", "-C", repo_path, "pull"], check=True)
+
+        # Restart the Flask application
+        os.execl(sys.executable, sys.executable, *sys.argv)
+
+    except Exception as e:
+        return f"Update failed: {e}", 500
+
+    return redirect(url_for('index'))
