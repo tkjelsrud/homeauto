@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, redirect, url_for
-import subprocess, sys, os
+from flask import Blueprint, jsonify, render_template_string
+import subprocess, os
 from config import CONFIG
 from integration.calendar import get_calendar
 from integration.weather import get_weather
@@ -161,13 +161,42 @@ def update():
         # Change to your Flask app directory
         repo_path = os.path.dirname(os.path.abspath(__file__))
 
-        # Pull the latest changes
-        subprocess.run(["git", "-C", repo_path, "pull"], check=True)
+        # Run git pull and capture the output
+        result = subprocess.run(
+            ["git", "-C", repo_path, "pull"],
+            capture_output=True, text=True, check=True
+        )
 
-        # Restart the Flask application
-        os.execl(sys.executable, sys.executable, *sys.argv)
+        output = result.stdout + result.stderr  # Combine stdout and stderr
 
-    except Exception as e:
-        return f"Update failed: {e}", 500
+        # Simple HTML template for displaying the output
+        html_template = """
+        <html>
+        <head>
+            <title>Update Result</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+                a { display: inline-block; margin-top: 10px; text-decoration: none; color: blue; }
+            </style>
+        </head>
+        <body>
+            <h2>Git Update Output</h2>
+            <pre>{{ output }}</pre>
+            <a href="/">Back to Index</a>
+        </body>
+        </html>
+        """
 
-    return redirect(url_for('index'))
+        return render_template_string(html_template, output=output)
+
+    except subprocess.CalledProcessError as e:
+        return f"""
+        <html>
+        <body>
+            <h2>Update Failed</h2>
+            <pre>{e.stderr}</pre>
+            <a href="/">Back to Index</a>
+        </body>
+        </html>
+        """, 500
