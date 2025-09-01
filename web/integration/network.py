@@ -17,7 +17,7 @@ def run_command(command):
     except subprocess.CalledProcessError as e:
         return str(e)
 
-def get_network():
+def get_network(netwString):
     """Scans the network using nmap and returns all active devices with vendor names."""
     
     # ✅ 1️⃣ Check cache
@@ -26,7 +26,7 @@ def get_network():
         return network_cache["devices"]
 
     # ✅ 2️⃣ Run `nmap` to find active devices (IP, MAC, Vendor)
-    nmap_output = run_command("sudo nmap -sn 192.168.10.0/24")
+    nmap_output = run_command("sudo nmap -sn " + netwString)
 
     devices = []
     current_device = {}

@@ -129,7 +129,8 @@ def waste():
 def network():
     try:
         # Fetch and parse calendar data from CONFIG
-        network = get_network()
+        netwStr = CONFIG['network']
+        network = get_network(netwStr)
 
         return api_response("Nettverk", "🌐", network, MINUTE * 5)
 
