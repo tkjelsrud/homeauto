@@ -327,29 +327,26 @@
                     widgetDiv.appendChild(list);
                 }
                 else {
-                    if (widgetData.data) {
-                        if (Array.isArray(widgetData.data)) {
-                            // 📌 If data is an array (e.g., Calendar)
-                            const list = document.createElement("ul");
-                            widgetData.data.forEach(item => {
-                                const listItem = document.createElement("li");
-                                listItem.innerText = `${item.summary} - ${item.start}`;
-                                list.appendChild(listItem);
-                            });
-                            widgetDiv.appendChild(list);
-                        } else if (typeof widgetData.data === "object") {
-                            // 📌 If data is an object (e.g., Weather)
-                            Object.entries(widgetData.data).forEach(([key, value]) => {
+                    if (typeof widgetData.data === "object") {
+                        Object.entries(widgetData.data).forEach(([key, value]) => {
+                            const title = document.createElement("h3");
+                            title.innerText = key.replace(/_/g, " ");
+                            widgetDiv.appendChild(title);
+
+                            if (Array.isArray(value)) {
+                                const list = document.createElement("ul");
+                                value.forEach(item => {
+                                    const listItem = document.createElement("li");
+                                    listItem.innerText = item;
+                                    list.appendChild(listItem);
+                                });
+                                widgetDiv.appendChild(list);
+                            } else {
                                 const p = document.createElement("p");
-                                p.innerText = `${key.replace(/_/g, " ")}: ${value}`;
+                                p.innerText = value;
                                 widgetDiv.appendChild(p);
-                            });
-                        } else {
-                            // 📌 Default text format
-                            const p = document.createElement("p");
-                            p.innerText = widgetData.data;
-                            widgetDiv.appendChild(p);
-                        }
+                            }
+                        });
                     }
                 }
             }
