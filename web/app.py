@@ -27,10 +27,10 @@ def widgets():
         {"endpoint": "/dinner"},
         {"endpoint": "/lights"},
         {"endpoint": "/music"},
-        {"endpoint": "/energy"},
-        {"endpoint": "/network"}, 
+        #{"endpoint": "/energy"},
+        #{"endpoint": "/network"}, 
         {"endpoint": "/timeplaner"},      
-        {"endpoint": "/ruter"}
+        #{"endpoint": "/ruter"}
     ])
 
 if __name__ == "__main__":
