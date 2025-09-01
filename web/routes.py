@@ -91,7 +91,7 @@ def dinner():
         return jsonify({"error": str(e)}), 500
 
 @routes.route("/timeplaner", methods=["GET"])
-def dinner():
+def timeplaner():
     try:
         # Fetch and parse calendar data from CONFIG
         timeplaner = get_dagens_timeplaner(CONFIG['TIMEPLANER_MAPPE'])
