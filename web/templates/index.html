@@ -393,6 +393,20 @@
             };
         });
     });
+
+    let lastReloadedHour = null;
+
+    setInterval(() => {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        if (currentMinute === 0 && currentHour !== lastReloadedHour) {
+        lastReloadedHour = currentHour;
+        console.log(`🔁 Reloading at full hour: ${currentHour}:00`);
+        location.reload(); // Reload siden én gang per ny hel time
+        }
+    }, 60 * 1000); // Sjekk hvert minutt
 </script>
     
 </body>
