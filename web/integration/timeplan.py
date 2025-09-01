@@ -7,6 +7,18 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
+def get_dagens_dag():
+    try:
+        locale.setlocale(locale.LC_TIME, "nb_NO.UTF-8")
+    except locale.Error:
+        pass  # fallback til engelsk
+
+    # Finn riktig ukedag som nøkkel
+    today = datetime.now()
+    weekday_key = today.strftime('%A').lower()
+    
+    return weekday_key
+
 def get_dagens_timeplaner(planmappe='./timeplaner'):
     # Sørg for norsk ukedag hvis ønskelig (må være installert på systemet)
     try:

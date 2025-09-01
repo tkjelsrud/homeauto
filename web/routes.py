@@ -9,7 +9,7 @@ from integration.energy import get_hvakosterstrom
 from integration.waste import get_garbage
 from integration.network import get_network
 from integration.bluesound import get_powernode
-from integration.timeplan import get_dagens_timeplaner
+from integration.timeplan import get_dagens_timeplaner, get_dagens_dag
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -94,9 +94,10 @@ def dinner():
 def timeplaner():
     try:
         # Fetch and parse calendar data from CONFIG
+        dagen = get_dagens_dag()
         timeplaner = get_dagens_timeplaner(CONFIG['TIMEPLANER_MAPPE'])
 
-        return api_response("Timeplaner",  "🍽️", timeplaner, HOUR)
+        return api_response("Timeplaner: " + dagen,  "🍽️", timeplaner, HOUR)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
