@@ -5,7 +5,7 @@ from integration.calendar import get_calendar
 from integration.weather import get_weather
 from integration.lights import get_zones
 from integration.dinner import get_dinner
-from integration.energy import get_tibber
+from integration.energy import get_hvakosterstrom
 from integration.waste import get_garbage
 from integration.network import get_network
 from integration.bluesound import get_powernode
@@ -104,7 +104,7 @@ def weather():
 def energy():
     try:
         # Fetch and parse calendar data from CONFIG
-        energy_data = get_tibber(CONFIG['TIBBER_TOKEN'])
+        energy_data = get_hvakosterstrom() #get_tibber(CONFIG['TIBBER_TOKEN'])
 
         if "error" in energy_data:
             return jsonify(energy_data), 500  # Return proper HTTP status

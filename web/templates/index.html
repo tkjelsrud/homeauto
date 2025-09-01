@@ -149,7 +149,7 @@
     };
 
     function getCustomWeatherIcon(symbolCode) {
-        return weatherIcons[symbolCode] || "❓";  // Default icon if unknown
+        return (weatherIcons[symbolCode] || "❓") + " " + symbolCode;  // Default icon if unknown
     }
 
     function getShortDay(dateString) {
