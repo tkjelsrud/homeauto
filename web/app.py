@@ -28,7 +28,8 @@ def widgets():
         {"endpoint": "/lights"},
         {"endpoint": "/music"},
         {"endpoint": "/energy"},
-        {"endpoint": "/network"},        
+        {"endpoint": "/network"}, 
+        {"endpoint": "/timeplaner"},      
         {"endpoint": "/ruter"}
     ])
 
