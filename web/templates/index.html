@@ -227,13 +227,13 @@
                     we = widgetData.data.next_1_hours;
                     listItem = document.createElement("div");
                     listItem.classList.add("line", "big");
-                    listItem.innerHTML = `1 time: ${getCustomWeatherIcon(we.summary.symbol_code)}`;
+                    listItem.innerHTML = `1 time: ${getCustomWeatherIcon(we.summary.symbol_code)} ${we.air_temperature_min}° - ${we.air_temperature_max}°`;
                     list.appendChild(listItem);
 
                     we = widgetData.data.next_6_hours;
                     listItem = document.createElement("div");
                     listItem.classList.add("line", "big");
-                    listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code)}`;
+                    listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code)} ${we.air_temperature_min}° - ${we.air_temperature_max}°`;
                     list.appendChild(listItem);
                     
                     widgetDiv.appendChild(list);
