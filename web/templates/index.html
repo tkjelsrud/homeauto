@@ -112,6 +112,9 @@
             margin-top: 4px;
             padding: 4px;
         }
+        .today {
+            background-color: #221036;
+        }
         .calday-header {
             background-color: #242628;
             font-size: 17px;
@@ -273,6 +276,9 @@
                 }
                 else if (endpoint === "/bigcalendar") {
 
+                    const todayIndex = new Date().getDay();  
+                    const correctedToday = (todayIndex + 6) % 7;
+
                     const week = widgetData.data;  // array med 7 dager
                     const list = document.createElement("div");
                     list.classList.add("week-grid"); // hvis du vil lage grid i CSS
@@ -280,6 +286,10 @@
                     week.forEach(day => {
                         const dayColumn = document.createElement("div");
                         dayColumn.classList.add("calday");
+
+                        if (day.weekday_index === correctedToday) {
+                            dayColumn.classList.add("today");
+                        }
 
                         // Header: Dag + middag
                         const header = document.createElement("div");
