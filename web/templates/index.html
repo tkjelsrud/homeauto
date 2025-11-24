@@ -211,11 +211,7 @@
                 iframe.src = widgetData.iframe;
                 widgetDiv.appendChild(iframe);
             } else {
-                const ph = document.createElement("div");
-                ph.classList.add('title');
-                ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
-                widgetDiv.appendChild(ph);
-
+                
                 if(endpoint === "/weather") {
                     const list = document.createElement("div");
                     let listItem = document.createElement("div");
@@ -292,6 +288,11 @@
                     widgetDiv.appendChild(list);
                 }
                 else if(endpoint === "/lights") {
+                    const ph = document.createElement("div");
+                    ph.classList.add('title');
+                    ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                    widgetDiv.appendChild(ph);
+                    
                     const list = document.createElement("div");
                     widgetData.data.forEach(item => {
                         const listItem = document.createElement("div");
@@ -303,6 +304,11 @@
                     widgetDiv.appendChild(list);
                 }
                 else if (endpoint === "/energy") {
+                    const ph = document.createElement("div");
+                    ph.classList.add('title');
+                    ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                    widgetDiv.appendChild(ph);
+
                     const we = widgetData.data; 
                     const list = document.createElement("div");
 
@@ -344,6 +350,11 @@
                     widgetDiv.appendChild(list);
                 }
                 else if(endpoint === "/network") {
+                    const ph = document.createElement("div");
+                    ph.classList.add('title');
+                    ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                    widgetDiv.appendChild(ph);
+
                     const list = document.createElement("div");
                     
                     we = widgetData.data;
@@ -359,6 +370,11 @@
                     widgetDiv.appendChild(list);
                 }
                 else if(endpoint === "/music") {
+                    const ph = document.createElement("div");
+                    ph.classList.add('title');
+                    ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                    widgetDiv.appendChild(ph);
+
                     const list = document.createElement("ul");
 
                     we = widgetData.data;
@@ -400,6 +416,11 @@
                     widgetDiv.appendChild(list);
                 }
                 else {
+                    const ph = document.createElement("div");
+                    ph.classList.add('title');
+                    ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                    widgetDiv.appendChild(ph);
+
                     if (typeof widgetData.data === "object") {
                         Object.entries(widgetData.data).forEach(([key, value]) => {
                             const title = document.createElement("h3");
