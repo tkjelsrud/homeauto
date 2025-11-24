@@ -206,26 +206,26 @@
                     const list = document.createElement("div");
                     let listItem = document.createElement("div");
 
-                    listItem.classList.add("float", "biggast", );
-                    listItem.innerHTML = `<div id="clock">&nbsp;</div>`;
+                    listItem.classList.add("biggast");
+                    listItem.innerHTML = `<span id="clock">&nbsp;</span>`;
                     list.appendChild(listItem);
 
                     we = widgetData.data.instant.details;
                     listItem = document.createElement("div");
-                    listItem.classList.add("float", "biggar","active");
+                    listItem.classList.add("biggar","active");
                     listItem.innerHTML = `${we.air_temperature}° ${getCustomWeatherIcon(widgetData.data.next_1_hours.summary.symbol_code)}`;
                     list.appendChild(listItem);
 
                     // next_1_hours
                     we = widgetData.data.next_1_hours;
                     listItem = document.createElement("div");
-                    listItem.classList.add("float", "big");
+                    listItem.classList.add("big");
                     listItem.innerHTML = `1 time: ${getCustomWeatherIcon(we.summary.symbol_code)}`;
                     list.appendChild(listItem);
 
                     we = widgetData.data.next_6_hours;
                     listItem = document.createElement("div");
-                    listItem.classList.add("float", "big");
+                    listItem.classList.add("big");
                     listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code)}`;
                     list.appendChild(listItem);
                     
