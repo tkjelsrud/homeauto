@@ -235,7 +235,7 @@
                     listItem = document.createElement("div");
                     listItem.classList.add("line", "big");
                     precipitation_amount = (we.details.precipitation_amount > 0 ? ` ${we.details.precipitation_amount}mm` : "");
-                    listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code) ${precipitation_amount}`;
+                    listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code)} ${precipitation_amount}`;
                     list.appendChild(listItem);
                     
                     widgetDiv.appendChild(list);
