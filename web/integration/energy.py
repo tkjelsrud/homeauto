@@ -98,60 +98,69 @@ def get_tibber(token):
         return {"error": f"Request error: {str(e)}"}
 
 def get_hvakosterstrom():
-    #https://www.hvakosterstrommen.no/api/v1/prices/2025/09-01_NO1.json
-
     import requests
     from datetime import datetime, timedelta
     import pytz
 
-    # Sett sone for korrekt sammenligning
     oslo_tz = pytz.timezone("Europe/Oslo")
     now = datetime.now(oslo_tz)
     today = now.date()
-    hour = now.hour
 
-    # Formater dato for URL
-    url_date = today.strftime("%Y/%m-%d")
-    url = f"https://www.hvakosterstrommen.no/api/v1/prices/{url_date}_NO1.json"
+    # Hent dagens priser
+    url_today = today.strftime("%Y/%m-%d")
+    url_today = f"https://www.hvakosterstrommen.no/api/v1/prices/{url_today}_NO1.json"
 
-    # Hent prisdata
-    response = requests.get(url)
-    prices = response.json()
+    prices_today = requests.get(url_today).json()
 
-    # Finn "nåværende" og "neste" time
+    # Hent morgendagens priser (kan være tom før kl 13)
+    tomorrow = today + timedelta(days=1)
+    url_tomorrow = tomorrow.strftime("%Y/%m-%d")
+    url_tomorrow = f"https://www.hvakosterstrommen.no/api/v1/prices/{url_tomorrow}_NO1.json"
+
+    try:
+        prices_tomorrow = requests.get(url_tomorrow).json()
+        max_tomorrow = max(prices_tomorrow, key=lambda p: p["NOK_per_kWh"])
+    except:
+        max_tomorrow = None
+
+    def parse_time(timestr):
+        dt = datetime.fromisoformat(timestr.replace("Z", "+00:00"))
+        return dt.astimezone(oslo_tz)
+
+    # Finn nåværende og neste pris
     current_price = None
     next_price = None
-    max_price = None
 
-    # Konverter til datetime for sammenligning
-    def parse_time(timestr):
-        return datetime.fromisoformat(timestr)
+    for i, price in enumerate(prices_today):
+        start = parse_time(price["time_start"])
+        end = parse_time(price["time_end"])
 
-    # Finn relevante priser
-    for price in prices:
-        start = parse_time(price["time_start"]).astimezone(oslo_tz)
-        if start.hour == hour and start.date() == today:
+        if start <= now < end:
             current_price = price
-        elif start.hour == hour + 1 and start.date() == today:
-            next_price = price
+            if i + 1 < len(prices_today):
+                next_price = prices_today[i + 1]
 
-    # Høyeste pris
-    max_price = max(prices, key=lambda p: p["NOK_per_kWh"])
+    max_today = max(prices_today, key=lambda p: p["NOK_per_kWh"])
 
-    # Vis resultat
-    print("⚡ Pris denne timen:")
-    print(f"{current_price['NOK_per_kWh']} kr/kWh ({current_price['time_start']} - {current_price['time_end']})")
-
-    print("\n⏭️ Pris neste time:")
-    print(f"{next_price['NOK_per_kWh']} kr/kWh ({next_price['time_start']} - {next_price['time_end']})")
-
-    print("\n🔺 Høyeste pris i dag:")
-    print(f"{max_price['NOK_per_kWh']} kr/kWh ({max_price['time_start']} - {max_price['time_end']})")
-
-    #return {
-    #    "total": round(price_info.get("total", 0), 4),
-    #    "energy": round(price_info.get("energy", 0), 4),
-    #    "tax": round(price_info.get("tax", 0), 4),
-    #    "timestamp": price_info.get("startsAt", "N/A"),
-    #    "consumption": consumption.get("nodes", [])
-    #}
+    return {
+        "now": {
+            "price": current_price["NOK_per_kWh"],
+            "from": current_price["time_start"],
+            "to": current_price["time_end"]
+        },
+        "next": {
+            "price": next_price["NOK_per_kWh"] if next_price else None,
+            "from": next_price["time_start"] if next_price else None,
+            "to": next_price["time_end"] if next_price else None
+        },
+        "max_today": {
+            "price": max_today["NOK_per_kWh"],
+            "from": max_today["time_start"],
+            "to": max_today["time_end"]
+        },
+        "max_tomorrow": {
+            "price": max_tomorrow["NOK_per_kWh"] if max_tomorrow else None,
+            "from": max_tomorrow["time_start"] if max_tomorrow else None,
+            "to": max_tomorrow["time_end"] if max_tomorrow else None
+        }
+    }
