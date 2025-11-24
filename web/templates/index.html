@@ -54,7 +54,7 @@
             border-radius: 2px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             width: 364px;
-            background: linear-gradient(to bottom, #22242c, #1e212e);
+            background: linear-gradient(to bottom, #1c1e25, #14161d);
         }
         #widget-bigcalendar {
             width: 1156px !important;
@@ -92,6 +92,13 @@
         .float {
             float: left;
             width: 156px;
+            margin-top: 4px;
+            margin-right: 4px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .line {
             margin-top: 4px;
             margin-right: 4px;
             margin-bottom: 6px;
@@ -206,26 +213,26 @@
                     const list = document.createElement("div");
                     let listItem = document.createElement("div");
 
-                    listItem.classList.add("biggast");
+                    listItem.classList.add("line", "biggast");
                     listItem.innerHTML = `<span id="clock">&nbsp;</span>`;
                     list.appendChild(listItem);
 
                     we = widgetData.data.instant.details;
                     listItem = document.createElement("div");
-                    listItem.classList.add("biggar","active");
+                    listItem.classList.add("line", "biggar","active");
                     listItem.innerHTML = `${we.air_temperature}° ${getCustomWeatherIcon(widgetData.data.next_1_hours.summary.symbol_code)}`;
                     list.appendChild(listItem);
 
                     // next_1_hours
                     we = widgetData.data.next_1_hours;
                     listItem = document.createElement("div");
-                    listItem.classList.add("big");
+                    listItem.classList.add("line", "big");
                     listItem.innerHTML = `1 time: ${getCustomWeatherIcon(we.summary.symbol_code)}`;
                     list.appendChild(listItem);
 
                     we = widgetData.data.next_6_hours;
                     listItem = document.createElement("div");
-                    listItem.classList.add("big");
+                    listItem.classList.add("line", "big");
                     listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code)}`;
                     list.appendChild(listItem);
                     
