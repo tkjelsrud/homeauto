@@ -206,13 +206,13 @@
                     const list = document.createElement("div");
                     let listItem = document.createElement("div");
 
-                    listItem.classList.add("float", "biggar", "active");
+                    listItem.classList.add("float", "biggast", );
                     listItem.innerHTML = `<span id="clock">&nbsp;</span>`;
                     list.appendChild(listItem);
 
                     we = widgetData.data.instant.details;
                     listItem = document.createElement("div");
-                    listItem.classList.add("float", "biggast");
+                    listItem.classList.add("float", "biggar","active");
                     listItem.innerHTML = `${we.air_temperature}° ${getCustomWeatherIcon(widgetData.data.next_1_hours.summary.symbol_code)}`;
                     list.appendChild(listItem);
 
