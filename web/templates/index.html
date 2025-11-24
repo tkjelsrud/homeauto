@@ -311,9 +311,11 @@
                             });
 
                             li.innerHTML = `
+                                <div class="calday">
                                     <span class="add">${timeStr}</span>
                                     ${evt.summary}
                                     ${evt.is_next_week ? ` <span class="subdue">(neste uke)</span>` : ""}
+                                </div>
                             `;
 
                             eventList.appendChild(li);

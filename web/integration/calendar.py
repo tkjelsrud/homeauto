@@ -65,37 +65,53 @@ def get_calendarweek(URL):
     now = datetime.now(timezone.utc)
     today = now.date()
 
-    # Finn mandag denne uken
-    this_week_monday = today - timedelta(days=today.weekday())
+    # Denne ukens og neste ukes ISO-nummer
+    this_iso_year, this_iso_week, _ = today.isocalendar()
+    next_iso_week = this_iso_week + 1
 
     for component in cal.walk():
         if component.name != "VEVENT":
             continue
 
+        # Skip recurring for now
+        if component.get("RRULE"):
+            continue
+
         start = component.get("DTSTART").dt
         summary = component.get("SUMMARY")
 
-        # Konverter
+        # Normaliser tid
         if isinstance(start, datetime):
             start_local = adjust_to_norwegian_time(start)
-            event_date = start_local.date()
-            formatted = start_local.strftime("%Y-%m-%d %H:%M:%S")
         else:
-            event_date = start
-            formatted = event_date.strftime("%Y-%m-%d")
+            # All-day event → midnight converted to Norwegian time
+            naive = datetime(start.year, start.month, start.day, 0, 0, tzinfo=timezone.utc)
+            start_local = adjust_to_norwegian_time(naive)
 
-        # Finn weekday index 0-6
+        event_date = start_local.date()
+        formatted = start_local.strftime("%Y-%m-%d %H:%M:%S")
+
+        # ISO uke for eventet
+        event_iso_year, event_iso_week, _ = event_date.isocalendar()
+
+        # --- HARD FILTER HERE ---
+        # Ta KUN denne uken + neste uke
+        if not (
+            (event_iso_year == this_iso_year and event_iso_week == this_iso_week) or
+            (event_iso_year == this_iso_year and event_iso_week == next_iso_week)
+        ):
+            continue
+
+        # Ukeoffset
+        week_offset = event_iso_week - this_iso_week
+
         weekday_index = event_date.weekday()
-
-        # Finn hvilken uke offset det gjelder
-        event_week_monday = event_date - timedelta(days=weekday_index)
-        delta_weeks = (event_week_monday - this_week_monday).days // 7
 
         events.append({
             "summary": summary,
             "start": formatted,
-            "weekday_index": weekday_index,   # 0 = mandag, 6 = søndag
-            "week_offset": delta_weeks       # 0 = denne uken, 1 = neste, etc.
+            "weekday_index": weekday_index,
+            "week_offset": week_offset
         })
 
     return events
