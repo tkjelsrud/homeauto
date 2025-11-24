@@ -204,14 +204,14 @@
 
                 if(endpoint === "/weather") {
                     const list = document.createElement("div");
+                    let listItem = document.createElement("div");
 
-                    
                     listItem.classList.add("float", "biggar", "active");
                     listItem.innerHTML = `<span id="clock">&nbsp;</span>`;
                     list.appendChild(listItem);
 
                     we = widgetData.data.instant.details;
-                    let listItem = document.createElement("div");
+                    listItem = document.createElement("div");
                     listItem.classList.add("float", "biggast");
                     listItem.innerHTML = `${we.air_temperature}° ${getCustomWeatherIcon(widgetData.data.next_1_hours.summary.symbol_code)}`;
                     list.appendChild(listItem);
@@ -385,7 +385,8 @@
         const minutes = String(now.getMinutes()).padStart(2, "0");
         const seconds = String(now.getSeconds()).padStart(2, "0");
         
-        document.getElementById("clock").textContent = `${hours}:${minutes}:${seconds}`;
+        if(document.getElementById("clock") != null)
+            document.getElementById("clock").textContent = `${hours}:${minutes}:${seconds}`;
     }
 
     // Run once immediately
