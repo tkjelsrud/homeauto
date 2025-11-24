@@ -20,19 +20,7 @@ def pihole_img(filename):
 
 @app.route("/widgets")
 def widgets():
-    return jsonify([
-        {"endpoint": "/weather"},
-        #{"endpoint": "/calendar"},
-        {"endpoint": "/bigcalendar"},
-        {"endpoint": "/waste"},
-        {"endpoint": "/dinner"},
-        {"endpoint": "/lights"},
-        {"endpoint": "/music"},
-        {"endpoint": "/energy"},
-        #{"endpoint": "/network"}, 
-        {"endpoint": "/timeplaner"},      
-        #{"endpoint": "/ruter"}
-    ])
+    return jsonify(CONFIG.get("widgets", []))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
