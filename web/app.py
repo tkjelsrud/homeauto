@@ -22,7 +22,7 @@ def pihole_img(filename):
 def widgets():
     return jsonify([
         {"endpoint": "/weather"},
-        {"endpoint": "/calendar"},
+        #{"endpoint": "/calendar"},
         {"endpoint": "/bigcalendar"},
         {"endpoint": "/waste"},
         {"endpoint": "/dinner"},
