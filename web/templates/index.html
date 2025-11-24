@@ -302,21 +302,47 @@
                     });
                     widgetDiv.appendChild(list);
                 }
-                else if(endpoint === "/energy") {
-                    const list = document.createElement("div");
-                    
-                    we = widgetData.data;
-                    let listItem = document.createElement("div");
-                    listItem.classList.add("float", "biggar", "active");
-                    listItem.innerHTML = `${we.total.toFixed(2)}kr <span class="subdue">/kw</span>`;
-                    list.appendChild(listItem);
+                else if (endpoint === "/energy") {
+                    const we = widgetData.data;
 
-                    we.consumption.forEach(item => {
-                        let listItem = document.createElement("div");
-                        listItem.classList.add("float", "off");
-                        listItem.innerHTML = `<span class="add">${getShortDay(item.from)}:</span> ${item.cost.toFixed(2)}kr (${item.consumption} kWh)`;
-                        list.appendChild(listItem);
-                    });
+                    const list = document.createElement("div");
+
+                    // Nåværende time
+                    let itemNow = document.createElement("div");
+                    itemNow.classList.add("float", "biggar", "active");
+                    itemNow.innerHTML = `
+                        ${we.now.price.toFixed(2)} kr/kWh 
+                        <span class="subdue">(nå)</span>
+                    `;
+                    list.appendChild(itemNow);
+
+                    // Neste time
+                    if (we.next && we.next.price !== null) {
+                        let itemNext = document.createElement("div");
+                        itemNext.classList.add("float", "off");
+                        itemNext.innerHTML = `
+                            Neste: ${we.next.price.toFixed(2)} kr/kWh
+                        `;
+                        list.appendChild(itemNext);
+                    }
+
+                    // Høyeste pris i dag
+                    let itemMax = document.createElement("div");
+                    itemMax.classList.add("float", "off");
+                    itemMax.innerHTML = `
+                        Høyeste i dag: ${we.max_today.price.toFixed(2)} kr/kWh
+                    `;
+                    list.appendChild(itemMax);
+
+                    // Høyeste pris i morgen (når den finnes)
+                    if (we.max_tomorrow && we.max_tomorrow.price !== null) {
+                        let itemMaxTomorrow = document.createElement("div");
+                        itemMaxTomorrow.classList.add("float", "off");
+                        itemMaxTomorrow.innerHTML = `
+                            Høyeste i morgen: ${we.max_tomorrow.price.toFixed(2)} kr/kWh
+                        `;
+                        list.appendChild(itemMaxTomorrow);
+                    }
 
                     widgetDiv.appendChild(list);
                 }
