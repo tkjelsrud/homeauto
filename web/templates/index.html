@@ -57,7 +57,7 @@
             background: linear-gradient(to bottom, #22242c, #1e212e);
         }
         #widget-bigcalendar {
-            width: 900px !important;
+            width: 1156px !important;
         }
         .icon {
             font-size: 12px;
@@ -104,6 +104,9 @@
         .biggar {
             font-size: 22px;
         }
+        .biggast {
+            font-size: 34px;
+        }
         .subdue {
             opacity: 0.6;
         }
@@ -134,7 +137,8 @@
 </head>
 <body>
    <div id="header">
-    <i class="fa-brands fa-raspberry-pi"></i> <a href="http://kjelpi.local:5000/">kjelpi</a> | <a href="http://kjelpi.local:5000/update">update</a> | <a href="http://kjelpi.local/admin/login">Pi-hole</a> | <a href="https://tv.nrk.no/direkte/nrk1">NRK TV</a> | <span id="clock">Time...</span>
+    <i class="fa-brands fa-raspberry-pi"></i> <a href="http://kjelpi.local:5000/">kjelpi</a> | <a href="http://kjelpi.local:5000/update">update</a> | <a href="http://kjelpi.local/admin/login">Pi-hole</a> | <a href="https://tv.nrk.no/direkte/nrk1">NRK TV</a>
+    <!-- | <span id="clock">Time...</span-->
    </div>
    <div id="main">
    </div>
@@ -201,9 +205,14 @@
                 if(endpoint === "/weather") {
                     const list = document.createElement("div");
 
+                    
+                    listItem.classList.add("float", "biggar", "active");
+                    listItem.innerHTML = `<span id="clock">&nbsp;</span>`;
+                    list.appendChild(listItem);
+
                     we = widgetData.data.instant.details;
                     let listItem = document.createElement("div");
-                    listItem.classList.add("float", "biggar", "active");
+                    listItem.classList.add("float", "biggast");
                     listItem.innerHTML = `${we.air_temperature}° ${getCustomWeatherIcon(widgetData.data.next_1_hours.summary.symbol_code)}`;
                     list.appendChild(listItem);
 
@@ -402,9 +411,9 @@
         const currentMinute = now.getMinutes();
 
         if (currentMinute === 0 && currentHour !== lastReloadedHour) {
-        lastReloadedHour = currentHour;
-        console.log(`🔁 Reloading at full hour: ${currentHour}:00`);
-        location.reload(); // Reload siden én gang per ny hel time
+            lastReloadedHour = currentHour;
+            console.log(`🔁 Reloading at full hour: ${currentHour}:00`);
+            location.reload(); // Reload siden én gang per ny hel time
         }
     }, 60 * 1000); // Sjekk hvert minutt
 </script>
