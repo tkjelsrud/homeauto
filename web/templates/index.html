@@ -227,13 +227,15 @@
                     we = widgetData.data.next_1_hours;
                     listItem = document.createElement("div");
                     listItem.classList.add("line", "big");
-                    listItem.innerHTML = `1 time: ${getCustomWeatherIcon(we.summary.symbol_code)} ${we.summary.air_temperature_min}° - ${we.summary.air_temperature_max}°`;
+                    precipitation_amount = (we.details.precipitation_amount > 0 ? ` ${we.details.precipitation_amount}mm` : "");
+                    listItem.innerHTML = `1 time: ${getCustomWeatherIcon(we.summary.symbol_code)} ${precipitation_amount}`;
                     list.appendChild(listItem);
 
                     we = widgetData.data.next_6_hours;
                     listItem = document.createElement("div");
                     listItem.classList.add("line", "big");
-                    listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code)} ${we.summary.air_temperature_min}° - ${we.summary.air_temperature_max}°`;
+                    precipitation_amount = (we.details.precipitation_amount > 0 ? ` ${we.details.precipitation_amount}mm` : "");
+                    listItem.innerHTML = `6 timer: ${getCustomWeatherIcon(we.summary.symbol_code) ${precipitation_amount}`;
                     list.appendChild(listItem);
                     
                     widgetDiv.appendChild(list);
