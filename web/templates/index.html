@@ -112,6 +112,12 @@
             margin-top: 4px;
             padding: 4px;
         }
+        .calday-header {
+            background-color: #242628;
+            font-size: 17px;
+            padding: 4px;
+            border-bottom: 1px solid #21330a;
+        }
         .big {
             font-size: 17px;
         }
@@ -277,7 +283,7 @@
 
                         // Header: Dag + middag
                         const header = document.createElement("div");
-                        header.classList.add("day-header");
+                        header.classList.add("calday-header");
                         header.innerHTML = `
                             <div class="day-name">${day.name}</div>
                         `;
