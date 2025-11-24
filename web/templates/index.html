@@ -273,7 +273,7 @@
 
                     week.forEach(day => {
                         const dayColumn = document.createElement("div");
-                        dayColumn.classList.add("day-column");
+                        dayColumn.classList.add("calday");
 
                         // Header: Dag + middag
                         const header = document.createElement("div");
@@ -310,7 +310,7 @@
                             });
 
                             li.innerHTML = `
-                                <div class="calday">
+                                <div>
                                     <span class="add">${timeStr}</span>
                                     ${evt.summary}
                                     ${evt.is_next_week ? ` <span class="subdue">(neste uke)</span>` : ""}
