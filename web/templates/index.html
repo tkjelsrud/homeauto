@@ -105,6 +105,11 @@
             border-radius: 8px;
             padding: 4px;
         }
+        .calday {
+            float: left;
+            width: 155px;
+            padding: 4px;
+        }
         .big {
             font-size: 17px;
         }
@@ -144,7 +149,7 @@
 </head>
 <body>
    <div id="header">
-    <i class="fa-brands fa-raspberry-pi"></i> <a href="http://kjelpi.local:5000/">kjelpi</a> | <a href="http://kjelpi.local:5000/update">update</a> | <a href="http://kjelpi.local/admin/login">Pi-hole</a> | <a href="https://tv.nrk.no/direkte/nrk1">NRK TV</a>
+    <i class="fa-brands fa-raspberry-pi"></i> <a href="http://kjelpi.local:5000/">kjelpi</a> | <a href="http://kjelpi.local:5000/update">update</a> | <a href="http://kjelpi.local/admin/login">Pi-hole</a> 
     <!-- | <span id="clock">Time...</span-->
    </div>
    <div id="main">
@@ -258,6 +263,28 @@
                             listItem.classList.add("subdue");
                         }
                         listItem.innerHTML = `<p><span class="add">${eventDate} ${eventTime}</span> ${item.summary}</p>`;
+                        list.appendChild(listItem);
+                    });
+                    widgetDiv.appendChild(list);
+                }
+                else if(endpoint === "/bigcalendar") {
+                    const list = document.createElement("ul");
+                    widgetData.data.forEach(item => {
+                        const listItem = document.createElement("li");
+                        const eventDateTime = new Date(item.start);
+                        const eventDate = new Date(item.start).toISOString().split("T")[0]; // Get YYYY-MM-DD
+                        const todayDate = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+                        const eventTime = eventDateTime.toLocaleTimeString("no-NO", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false, // Ensures 24-hour format
+                        });
+
+                        // Add class if not today
+                        if (eventDate !== todayDate) {
+                            listItem.classList.add("subdue");
+                        }
+                        listItem.innerHTML = `<div class="calday"><span class="add">${eventDate} ${eventTime}</span> ${item.summary}</div>`;
                         list.appendChild(listItem);
                     });
                     widgetDiv.appendChild(list);
