@@ -68,6 +68,27 @@ def calendar():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@routes.route("/bigcalendar", methods=["GET"])
+def bigcalendar():
+    try:
+        # Fetch and parse calendar data from CONFIG
+        #calendar_data = get_calendar(CONFIG['bigcalendar'])
+        dummy_events = [
+            {"title": "Mandag", "start": "2024-07-01T10:00:00", "end": "2024-07-01T11:00:00"},
+            {"title": "Tirsdag", "start": "2024-07-02T12:00:00", "end": "2024-07-02T13:00:00"},
+            {"title": "Onsdag", "start": "2024-07-03T14:00:00", "end": "2024-07-03T15:00:00"},
+            {"title": "Torsdag", "start": "2024-07-04T16:00:00", "end": "2024-07-04T17:00:00"},
+            {"title": "Fredag", "start": "2024-07-05T18:00:00", "end": "2024-07-05T19:00:00"},
+            {"title": "Lørdag", "start": "2024-07-06T20:00:00", "end": "2024-07-06T21:00:00"},
+            {"title": "Søndag", "start": "2024-07-07T22:00:00", "end": "2024-07-07T23:00:00"}
+        ]           
+        #sorted_events = sorted(calendar_data, key=lambda x: x["start"], reverse=False)
+
+        return api_response("Stor Kalender", "📅", dummy_events, 10 * MINUTE)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @routes.route("/lights", methods=["GET"])
 def lights():
     try:
