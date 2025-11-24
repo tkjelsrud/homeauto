@@ -280,7 +280,6 @@
                         header.classList.add("day-header");
                         header.innerHTML = `
                             <div class="day-name">${day.name}</div>
-                            ${day.dinner ? `<div class="dinner">🍽️ ${day.dinner}</div>` : ""}
                         `;
                         dayColumn.appendChild(header);
 
@@ -322,6 +321,13 @@
                         });
 
                         dayColumn.appendChild(eventList);
+
+                        const dinnar = document.createElement("div");
+                        dinnar.classList.add("day-header");
+                        dinnar.innerHTML = day.dinner ? `<div class="dinner">🍽️ ${day.dinner}</div>` : "";
+
+                        dayColumn.appendChild(dinnar);
+
                         list.appendChild(dayColumn);
                     });
 
