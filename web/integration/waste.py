@@ -1,9 +1,10 @@
 # https://www.oslo.kommune.no/xmlhttprequest.php?service=ren.search&street=Årvollveien&number=34&letter=&street_id=18808
 import requests
 
-def get_garbage():
-    URL = "https://www.oslo.kommune.no/xmlhttprequest.php?service=ren.search&street=Årvollveien&number=34&letter=&street_id=18808"  # Replace with actual API URL
-    HEADERS = {"User-Agent": "homeauto/1.0 (your@email.com)"}  # Customize user agent
+def get_garbage(GBURL):
+    URL = GBURL
+    #%C3%98streheimsveien&number=20&letter=C&street_id=18703
+    HEADERS = {"User-Agent": "homeauto/1.0 (tkjelsrud@gmail.com)"}  # Customize user agent
 
     response = requests.get(URL, headers=HEADERS)
 
@@ -19,6 +20,7 @@ def get_garbage():
             for tjeneste in hentepunkt["Tjenester"]:  # Services per location
                 fraksjon = tjeneste["Fraksjon"]["Tekst"]  # "Restavfall" or "Papir"
                 dato = tjeneste["TommeDato"]  # Pickup date
+                #hyppighet = tjeneste["HenteHyppighet"]["Tekst"]  # e.g., "Hver 4. uke"
 
                 if fraksjon in ["Restavfall", "Papir"] and fraksjon not in schedule:
                     schedule[fraksjon] = dato  # Save only the first match

@@ -134,7 +134,7 @@ def energy():
 def waste():
     try:
         # Fetch and parse calendar data from CONFIG
-        garbage_schedule = get_garbage()
+        garbage_schedule = get_garbage(CONFIG['GARBAGEURL'])
 
         return api_response("Søppelhenting", "♻️", garbage_schedule, HOUR)
 
