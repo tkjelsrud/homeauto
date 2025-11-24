@@ -56,3 +56,46 @@ def get_calendar(URL):
                 events.append({"summary": event_summary, "start": formatted_start})
 
     return events
+
+def get_calendarweek(URL):
+    response = requests.get(URL)
+    cal = icalendar.Calendar.from_ical(response.text)
+
+    events = []
+    now = datetime.now(timezone.utc)
+    today = now.date()
+
+    # Finn mandag denne uken
+    this_week_monday = today - timedelta(days=today.weekday())
+
+    for component in cal.walk():
+        if component.name != "VEVENT":
+            continue
+
+        start = component.get("DTSTART").dt
+        summary = component.get("SUMMARY")
+
+        # Konverter
+        if isinstance(start, datetime):
+            start_local = adjust_to_norwegian_time(start)
+            event_date = start_local.date()
+            formatted = start_local.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            event_date = start
+            formatted = event_date.strftime("%Y-%m-%d")
+
+        # Finn weekday index 0-6
+        weekday_index = event_date.weekday()
+
+        # Finn hvilken uke offset det gjelder
+        event_week_monday = event_date - timedelta(days=weekday_index)
+        delta_weeks = (event_week_monday - this_week_monday).days // 7
+
+        events.append({
+            "summary": summary,
+            "start": formatted,
+            "weekday_index": weekday_index,   # 0 = mandag, 6 = søndag
+            "week_offset": delta_weeks       # 0 = denne uken, 1 = neste, etc.
+        })
+
+    return events

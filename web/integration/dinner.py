@@ -16,6 +16,61 @@ day_map = {
     "S": "Søndag" # Søndag
 }
 
+def get_dinnerweek(DINNERURL):
+    weekday_index_map = {
+        "M": 0,   # Mandag
+        "T": 1,   # Tirsdag (første T)
+        "O": 2,   # Onsdag
+        "T2": 3,  # Torsdag (andre T)
+        "L": 4,   # Lørdag
+        "F": 5,   # Fredag
+        "S": 6    # Søndag (om nødvendig)
+    }
+    
+    response = requests.get(DINNERURL)
+    logging.info(f"Response: {response}")
+
+    if response.status_code != 200:
+        return {"error": "Failed to fetch dinner plan"}
+
+    raw_text = response.text.strip()
+    lines = raw_text.split("\n")
+
+    important = ""
+    entries = []
+    seen_t = False  # For å bestemme T vs T2
+
+    for line in lines:
+        match = re.match(r"(VIKTIG|[MTOLFS]):\s*(.*)", line.strip())
+        if match:
+            shorthand, description = match.groups()
+
+            if shorthand == "VIKTIG":
+                important = description.strip()
+                continue
+
+            # Håndtering av T (første er tirsdag, andre er torsdag)
+            if shorthand == "T":
+                if not seen_t:
+                    shorthand = "T"   # Tirsdag
+                    seen_t = True
+                else:
+                    shorthand = "T2"  # Torsdag
+
+            entries.append({
+                "shorthand": shorthand,
+                "weekday_index": weekday_index_map[shorthand],
+                "description": description.strip()
+            })
+        else:
+            if len(entries) > 0:
+                break
+
+    return {
+        "important": important,
+        "days": entries
+    }
+
 def get_dinner(DINNERURL):
     response = requests.get(DINNERURL)
 

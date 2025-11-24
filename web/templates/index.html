@@ -53,11 +53,11 @@
             margin: 8px;
             border-radius: 2px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            width: 364px;
+            width: 376px;
             background: linear-gradient(to bottom, #1c1e25, #14161d);
         }
         #widget-bigcalendar {
-            width: 1156px !important;
+            width: 1204px !important;
         }
         .icon {
             font-size: 12px;
@@ -265,26 +265,66 @@
                     });
                     widgetDiv.appendChild(list);
                 }
-                else if(endpoint === "/bigcalendar") {
-                    const list = document.createElement("ul");
-                    widgetData.data.forEach(item => {
-                        const listItem = document.createElement("li");
-                        const eventDateTime = new Date(item.start);
-                        const eventDate = new Date(item.start).toISOString().split("T")[0]; // Get YYYY-MM-DD
-                        const todayDate = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-                        const eventTime = eventDateTime.toLocaleTimeString("no-NO", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: false, // Ensures 24-hour format
+                else if (endpoint === "/bigcalendar") {
+
+                    const week = widgetData.data;  // array med 7 dager
+                    const list = document.createElement("div");
+                    list.classList.add("week-grid"); // hvis du vil lage grid i CSS
+
+                    week.forEach(day => {
+                        const dayColumn = document.createElement("div");
+                        dayColumn.classList.add("day-column");
+
+                        // Header: Dag + middag
+                        const header = document.createElement("div");
+                        header.classList.add("day-header");
+                        header.innerHTML = `
+                            <div class="day-name">${day.name}</div>
+                            ${day.dinner ? `<div class="dinner">🍽️ ${day.dinner}</div>` : ""}
+                        `;
+                        dayColumn.appendChild(header);
+
+                        // Eventliste
+                        const eventList = document.createElement("ul");
+
+                        // Ingen events?
+                        if (day.events.length === 0) {
+                            const empty = document.createElement("li");
+                            empty.classList.add("subdue");
+                            empty.textContent = "Ingen hendelser";
+                            eventList.appendChild(empty);
+                        }
+
+                        day.events.forEach(evt => {
+                            const li = document.createElement("li");
+
+                            // Fargelegg neste-uke-eventer
+                            if (evt.is_next_week) {
+                                li.classList.add("nextweek"); // legg til CSS
+                            }
+
+                            const dt = new Date(evt.start);
+                            const dateStr = dt.toLocaleDateString("no-NO");
+                            const timeStr = dt.toLocaleTimeString("no-NO", {
+                                hour: "2-digit",
+                                minute: "2-digit"
+                            });
+
+                            li.innerHTML = `
+                                <div class="calday">
+                                    <span class="add">${timeStr}</span>
+                                    ${evt.summary}
+                                    ${evt.is_next_week ? ` <span class="subdue">(neste uke)</span>` : ""}
+                                </div>
+                            `;
+
+                            eventList.appendChild(li);
                         });
 
-                        // Add class if not today
-                        if (eventDate !== todayDate) {
-                            listItem.classList.add("subdue");
-                        }
-                        listItem.innerHTML = `<div class="calday"><span class="add">${eventDate} ${eventTime}</span> ${item.summary}</div>`;
-                        list.appendChild(listItem);
+                        dayColumn.appendChild(eventList);
+                        list.appendChild(dayColumn);
                     });
+
                     widgetDiv.appendChild(list);
                 }
                 else if(endpoint === "/lights") {

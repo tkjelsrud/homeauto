@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, render_template_string
 import subprocess, os
 from config import CONFIG
-from integration.calendar import get_calendar
+from integration.calendar import get_calendar, get_calendarweek
 from integration.weather import get_weather
 from integration.lights import get_zones
-from integration.dinner import get_dinner
+from integration.dinner import get_dinner, get_dinnerweek
 from integration.energy import get_hvakosterstrom
 from integration.waste import get_garbage
 from integration.network import get_network
@@ -71,20 +71,44 @@ def calendar():
 @routes.route("/bigcalendar", methods=["GET"])
 def bigcalendar():
     try:
-        # Fetch and parse calendar data from CONFIG
-        #calendar_data = get_calendar(CONFIG['bigcalendar'])
-        dummy_events = [
-            {"title": "Mandag", "start": "2024-07-01T10:00:00", "end": "2024-07-01T11:00:00"},
-            {"title": "Tirsdag", "start": "2024-07-02T12:00:00", "end": "2024-07-02T13:00:00"},
-            {"title": "Onsdag", "start": "2024-07-03T14:00:00", "end": "2024-07-03T15:00:00"},
-            {"title": "Torsdag", "start": "2024-07-04T16:00:00", "end": "2024-07-04T17:00:00"},
-            {"title": "Fredag", "start": "2024-07-05T18:00:00", "end": "2024-07-05T19:00:00"},
-            {"title": "Lørdag", "start": "2024-07-06T20:00:00", "end": "2024-07-06T21:00:00"},
-            {"title": "Søndag", "start": "2024-07-07T22:00:00", "end": "2024-07-07T23:00:00"}
-        ]           
-        #sorted_events = sorted(calendar_data, key=lambda x: x["start"], reverse=False)
+        calendar_data = get_calendarweek(CONFIG['calendar'])
+        dinner_data   = get_dinnerweek(CONFIG['DINNERURL'])
 
-        return api_response("Stor Kalender", "📅", dummy_events, 10 * MINUTE)
+        # Sett opp 7 tomme ukedager (mandag–søndag)
+        days = [
+            {
+                "weekday_index": i,
+                "name": ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"][i],
+                "events": [],
+                "dinner": None
+            }
+            for i in range(7)
+        ]
+
+        # Middagsplan har alltid week_offset = 0 → denne ukens middag
+        for dinner in dinner_data["days"]:
+            idx = dinner["weekday_index"]
+            days[idx]["dinner"] = dinner["description"]
+
+        # Kalender:
+        # ➤ legg inn ALLE events (også neste uke)
+        # ➤ legg events på riktig weekday_index
+        # ➤ marker om det er neste uke eller ikke
+        for evt in calendar_data:
+            idx = evt["weekday_index"]
+
+            days[idx]["events"].append({
+                "summary": evt["summary"],
+                "start": evt["start"],
+                "is_next_week": (evt["week_offset"] > 0)
+            })
+
+        return api_response(
+            "Stor Kalender",
+            "📅",
+            days,
+            10 * MINUTE
+        )
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
