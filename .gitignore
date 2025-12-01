@@ -24,6 +24,12 @@ Thumbs.db
 
 # Config files with sensitive data
 config.json
+config.json.serv
+
+# Integration files with private data
+integration/*.txt
+integration/*.json
+web/integration/timeplaner/*.json
 
 # Test files
 test_*.py
