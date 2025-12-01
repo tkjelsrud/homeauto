@@ -520,13 +520,20 @@
                                 let tempColor = "#ffffff"; // default white
                                 if (device.ambient_temp != null && device.target_temp != null) {
                                     const diff = device.ambient_temp - device.target_temp;
-                                    if (diff < 0) {
+                                    const absDiff = Math.abs(diff);
+                                    
+                                    if (absDiff < 2) {
+                                        // Within 2 degrees - gray/white (close to target)
+                                        tempColor = "#cccccc";
+                                    } else if (diff < 0) {
                                         // Below target - blue gradient (colder = more blue)
-                                        const intensity = Math.min(Math.abs(diff) / 10 * 255, 255);
+                                        // Scale: 2-10 degrees below = light to deep blue
+                                        const intensity = Math.min((absDiff - 2) / 8 * 200, 200);
                                         tempColor = `rgb(${Math.floor(255 - intensity)}, ${Math.floor(255 - intensity/2)}, 255)`;
-                                    } else if (diff > 0) {
+                                    } else {
                                         // Above target - red gradient (warmer = more red)
-                                        const intensity = Math.min(diff / 5 * 255, 255);
+                                        // Scale: 2-7 degrees above = light to deep red
+                                        const intensity = Math.min((absDiff - 2) / 5 * 200, 200);
                                         tempColor = `rgb(255, ${Math.floor(255 - intensity)}, ${Math.floor(255 - intensity)})`;
                                     }
                                 }
