@@ -353,6 +353,24 @@
 
                         dayColumn.appendChild(dinnar);
 
+                        // Søppelhenting (hvis aktuelt for denne uken)
+                        if (day.waste && day.waste.length > 0) {
+                            const wasteContainer = document.createElement("div");
+                            wasteContainer.style.padding = "6px";
+                            wasteContainer.style.marginTop = "4px";
+                            wasteContainer.style.backgroundColor = "#2d1a07";
+                            wasteContainer.style.borderRadius = "4px";
+                            wasteContainer.style.fontSize = "14px";
+                            
+                            day.waste.forEach(waste => {
+                                const wasteItem = document.createElement("div");
+                                wasteItem.textContent = `${waste.icon} ${waste.type}`;
+                                wasteContainer.appendChild(wasteItem);
+                            });
+                            
+                            dayColumn.appendChild(wasteContainer);
+                        }
+
                         // Timeplaner (kun for dagens dag)
                         if (day.timeplaner && Object.keys(day.timeplaner).length > 0) {
                             const timeplanContainer = document.createElement("div");

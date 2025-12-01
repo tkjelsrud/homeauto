@@ -71,10 +71,11 @@ def calendar():
 @routes.route("/bigcalendar", methods=["GET"])
 def bigcalendar():
     try:
-        from datetime import datetime
+        from datetime import datetime, timedelta
         
         calendar_data = get_calendarweek(CONFIG['calendar'])
         dinner_data   = get_dinnerweek(CONFIG['DINNERURL'])
+        waste_data    = get_garbage(CONFIG['GARBAGEURL'])
 
         # Sett opp 7 tomme ukedager (mandag–søndag)
         days = [
@@ -83,7 +84,8 @@ def bigcalendar():
                 "name": ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"][i],
                 "events": [],
                 "dinner": None,
-                "timeplaner": None
+                "timeplaner": None,
+                "waste": []
             }
             for i in range(7)
         ]
@@ -111,6 +113,34 @@ def bigcalendar():
         if 0 <= today_index <= 4:  # Mandag til Fredag
             timeplaner_data = get_dagens_timeplaner(CONFIG['TIMEPLANER_MAPPE'])
             days[today_index]["timeplaner"] = timeplaner_data
+
+        # Søppelhenting - legg til hvis det er denne uken
+        today = datetime.now().date()
+        monday_this_week = today - timedelta(days=today.weekday())
+        sunday_this_week = monday_this_week + timedelta(days=6)
+
+        waste_icons = {
+            "Restavfall": "♻️",
+            "Papir": "📄"
+        }
+
+        for waste_type, date_str in waste_data.items():
+            if waste_type in ["Restavfall", "Papir"]:
+                # Parse date (format: "11.03.2025")
+                try:
+                    day, month, year = date_str.split(".")
+                    waste_date = datetime(int(year), int(month), int(day)).date()
+                    
+                    # Sjekk om datoen er i denne uken
+                    if monday_this_week <= waste_date <= sunday_this_week:
+                        weekday_idx = waste_date.weekday()
+                        icon = waste_icons.get(waste_type, "🗑️")
+                        days[weekday_idx]["waste"].append({
+                            "type": waste_type,
+                            "icon": icon
+                        })
+                except Exception as e:
+                    pass  # Ignorer feil i datoformat
 
         return api_response(
             "Stor Kalender",
