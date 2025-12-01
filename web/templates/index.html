@@ -523,8 +523,8 @@
                                     const absDiff = Math.abs(diff);
                                     
                                     if (absDiff < 2) {
-                                        // Within 2 degrees - gray/white (close to target)
-                                        tempColor = "#cccccc";
+                                        // Within 2 degrees - dark gray (close to target)
+                                        tempColor = "#555555";
                                     } else if (diff < 0) {
                                         // Below target - blue gradient (colder = more blue)
                                         // Scale: 2-10 degrees below = light to deep blue
