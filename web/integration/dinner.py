@@ -22,8 +22,8 @@ def get_dinnerweek(DINNERURL):
         "T": 1,   # Tirsdag (første T)
         "O": 2,   # Onsdag
         "T2": 3,  # Torsdag (andre T)
-        "L": 4,   # Lørdag
-        "F": 5,   # Fredag
+        "F": 4,   # Fredag
+        "L": 5,   # Lørdag
         "S": 6    # Søndag (om nødvendig)
     }
     

@@ -353,6 +353,60 @@
 
                         dayColumn.appendChild(dinnar);
 
+                        // Timeplaner (kun for dagens dag)
+                        if (day.timeplaner && Object.keys(day.timeplaner).length > 0) {
+                            const timeplanContainer = document.createElement("div");
+                            timeplanContainer.style.fontSize = "10px";
+                            timeplanContainer.style.marginTop = "8px";
+                            timeplanContainer.style.padding = "4px";
+                            timeplanContainer.style.backgroundColor = "#1a1b20";
+                            timeplanContainer.style.borderRadius = "4px";
+
+                            // Create table for side-by-side display
+                            const table = document.createElement("table");
+                            table.style.width = "100%";
+                            table.style.borderCollapse = "collapse";
+
+                            const barnNames = Object.keys(day.timeplaner);
+                            
+                            // Header row with names
+                            const headerRow = document.createElement("tr");
+                            barnNames.forEach(barnNavn => {
+                                const th = document.createElement("th");
+                                th.textContent = barnNavn;
+                                th.style.textAlign = "left";
+                                th.style.padding = "2px 4px";
+                                th.style.borderBottom = "1px solid #414639";
+                                th.style.color = "#EEC14D";
+                                th.style.fontSize = "11px";
+                                headerRow.appendChild(th);
+                            });
+                            table.appendChild(headerRow);
+
+                            // Find max number of rows needed
+                            const maxRows = Math.max(...barnNames.map(navn => day.timeplaner[navn].length));
+
+                            // Create rows for each subject
+                            for (let i = 0; i < maxRows; i++) {
+                                const row = document.createElement("tr");
+                                
+                                barnNames.forEach(barnNavn => {
+                                    const td = document.createElement("td");
+                                    const fag = day.timeplaner[barnNavn][i] || "";
+                                    td.textContent = fag;
+                                    td.style.padding = "2px 4px";
+                                    td.style.verticalAlign = "top";
+                                    td.style.borderRight = "1px solid #2a2b30";
+                                    row.appendChild(td);
+                                });
+                                
+                                table.appendChild(row);
+                            }
+
+                            timeplanContainer.appendChild(table);
+                            dayColumn.appendChild(timeplanContainer);
+                        }
+
                         list.appendChild(dayColumn);
                     });
 

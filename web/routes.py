@@ -71,6 +71,8 @@ def calendar():
 @routes.route("/bigcalendar", methods=["GET"])
 def bigcalendar():
     try:
+        from datetime import datetime
+        
         calendar_data = get_calendarweek(CONFIG['calendar'])
         dinner_data   = get_dinnerweek(CONFIG['DINNERURL'])
 
@@ -80,7 +82,8 @@ def bigcalendar():
                 "weekday_index": i,
                 "name": ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"][i],
                 "events": [],
-                "dinner": None
+                "dinner": None,
+                "timeplaner": None
             }
             for i in range(7)
         ]
@@ -102,6 +105,12 @@ def bigcalendar():
                 "start": evt["start"],
                 "is_next_week": (evt["week_offset"] > 0)
             })
+
+        # Hent timeplaner for dagens dag (kun ukedager 0-4)
+        today_index = datetime.now().weekday()
+        if 0 <= today_index <= 4:  # Mandag til Fredag
+            timeplaner_data = get_dagens_timeplaner(CONFIG['TIMEPLANER_MAPPE'])
+            days[today_index]["timeplaner"] = timeplaner_data
 
         return api_response(
             "Stor Kalender",
