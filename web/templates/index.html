@@ -477,6 +477,57 @@
 
                     widgetDiv.appendChild(list);
                 }
+                else if (endpoint === "/mill") {
+                    const ph = document.createElement("div");
+                    ph.classList.add('title');
+                    ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                    widgetDiv.appendChild(ph);
+
+                    const millData = widgetData.data;
+                    
+                    // Check for errors
+                    if (millData.error) {
+                        const errorDiv = document.createElement("div");
+                        errorDiv.classList.add("float", "off");
+                        errorDiv.textContent = `Feil: ${millData.error}`;
+                        widgetDiv.appendChild(errorDiv);
+                    } else {
+                        const rooms = millData.rooms || {};
+                        
+                        Object.keys(rooms).forEach(roomName => {
+                            const devices = rooms[roomName];
+                            
+                            // Room header
+                            const roomHeader = document.createElement("div");
+                            roomHeader.classList.add("float", "biggar");
+                            roomHeader.style.marginTop = "10px";
+                            roomHeader.textContent = roomName;
+                            widgetDiv.appendChild(roomHeader);
+                            
+                            // Devices in room
+                            devices.forEach(device => {
+                                const deviceDiv = document.createElement("div");
+                                deviceDiv.classList.add("float");
+                                
+                                const connectedIcon = device.connected ? "✓" : "✗";
+                                const connectedClass = device.connected ? "active" : "off";
+                                
+                                const ambientTemp = device.ambient_temp != null ? device.ambient_temp.toFixed(1) : "–";
+                                const targetTemp = device.target_temp != null ? device.target_temp : "–";
+                                const power = device.power != null ? device.power : 0;
+                                
+                                deviceDiv.classList.add(connectedClass);
+                                deviceDiv.innerHTML = `
+                                    <strong>${device.name}</strong> ${connectedIcon}<br>
+                                    Temp: ${ambientTemp}°C → ${targetTemp}°C<br>
+                                    Effekt: ${power}W
+                                `;
+                                
+                                widgetDiv.appendChild(deviceDiv);
+                            });
+                        });
+                    }
+                }
                 else if(endpoint === "/network") {
                     const ph = document.createElement("div");
                     ph.classList.add('title');

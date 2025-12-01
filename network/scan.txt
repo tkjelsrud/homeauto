@@ -1,0 +1,5 @@
+sudo apt update && sudo apt install arp-scan -y
+sudo arp-scan --localnet
+
+sudo apt update && sudo apt install nmap -y
+sudo nmap -sn 192.168.10.0/24

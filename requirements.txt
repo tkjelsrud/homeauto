@@ -1,0 +1,16 @@
+flask
+flask-cors
+influxdb        # For InfluxDB 2.x (use `influxdb` for 1.x)
+sqlite3         # Lightweight alternative (built into Python)
+flask-socketio       # WebSockets for real-time updates
+eventlet             # Required for async WebSockets in Flask
+requests             # Fetching external APIs (weather, stocks, etc.)
+pyyaml               # Parsing YAML config files if needed
+paho-mqtt            # MQTT communication (for Zigbee2MQTT)
+pyserial             # Serial communication if needed (e.g., reading HAN power meters)
+pytest              # Unit testing framework
+pytest-mock         # Mocks for API tests
+coverage            # Code coverage for tests
+flask-testing       # Simplifies testing Flask apps
+gunicorn            # Production WSGI server for Flask
+loguru              # Better logging with timestamps

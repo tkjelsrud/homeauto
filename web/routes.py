@@ -10,6 +10,7 @@ from integration.waste import get_garbage
 from integration.network import get_network
 from integration.bluesound import get_powernode
 from integration.timeplan import get_dagens_timeplaner, get_dagens_dag
+from integration.mill import authenticate, get_mill_devices
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -255,6 +256,25 @@ def ruter():
         "icon": "🚌",
         "iframe": CONFIG['RUTER']
     })
+
+@routes.route("/mill", methods=["GET"])
+def mill():
+    # Authenticate and get devices
+    auth = authenticate(CONFIG['MILL_USERNAME'], CONFIG['MILL_PASSWORD'])
+    if not auth:
+        return api_response("Mill", "🔥", {"error": "Authentication failed"}, refresh=5*MINUTE)
+    
+    devices = get_mill_devices(auth['idToken'])
+    
+    # Group devices by room
+    rooms = {}
+    for device in devices:
+        room = device['room']
+        if room not in rooms:
+            rooms[room] = []
+        rooms[room].append(device)
+    
+    return api_response("Mill Varme", "🔥", {"rooms": rooms}, refresh=2*MINUTE)
 
 @routes.route('/update', methods=['GET'])
 def update():

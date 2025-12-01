@@ -1,0 +1,48 @@
+sudo apt update && sudo apt install -y python3-pip
+sudo apt install python3-flask
+
+
+
+# Move logs to memory
+sudo nano /etc/fstab
+tmpfs /var/log tmpfs defaults,noatime,size=100M 0 0
+
+# Read only mode
+sudo raspi-config
+# Performance Options → Overlay Filesystem → Enable Read-Only Mode
+
+sudo apt install python3-icalendar
+
+python3 -m venv ~/myenv
+source ~/myenv/bin/activate
+pip install icalendar
+
+pip install flask
+pip install requests
+
+sudo apt update
+sudo apt install nmap -y
+
+# Setting up as a service
+sudo nano /etc/systemd/system/homeauto_app.service
+
+
+[Unit]
+Description=Flask Web Server
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/thomas/homeauto/web
+ExecStart=/bin/sh -c '/usr/bin/python3.11 /home/thomas/homeauto/web/app.py'
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+
+# Logging
+sudo journalctl -u homeauto_app --no-pager --follow

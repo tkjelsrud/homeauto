@@ -1,0 +1,37 @@
+$ curl -X POST -d '{"devicetype":"my_hue_app"}' http://192.168.10.125/api
+
+[{"success":{"username":"swKyt9nx9E8hyaIrbFofoTn5FizDo2Dl0N1qwWmC"}}]
+
+curl -X GET http://192.168.10.125/api/swKyt9nx9E8hyaIrbFofoTn5FizDo2Dl0N1qwWmC/lights
+curl -X GET http://192.168.10.125/api/swKyt9nx9E8hyaIrbFofoTn5FizDo2Dl0N1qwWmC/sensors
+curl -X GET http://192.168.10.125/api/swKyt9nx9E8hyaIrbFofoTn5FizDo2Dl0N1qwWmC/groups
+
+import requests
+import time
+from datetime import datetime
+
+HUE_BRIDGE_IP = "192.168.10.150"
+API_KEY = "YOUR-API-KEY"
+SENSOR_ID = "12"  # Change based on your button ID
+
+def is_active_hours():
+    """Only check button presses between 07:00-23:00"""
+    now = datetime.now().hour
+    return 7 <= now < 23
+
+last_event = None
+
+while True:
+    if is_active_hours():
+        response = requests.get(f"http://{HUE_BRIDGE_IP}/api/{API_KEY}/sensors/{SENSOR_ID}")
+        if response.status_code == 200:
+            data = response.json()
+            button_event = data["state"]["buttonevent"]
+            if button_event and button_event != last_event:
+                print(f"Button pressed! Event: {button_event}")
+                last_event = button_event
+    else:
+        print("Sleeping for 6 hours (night mode)")
+        time.sleep(21600)  # Sleep for 6 hours during inactive hours
+
+    time.sleep(3)  # Regular check every 3 seconds

@@ -1,0 +1,15 @@
+curl http://POWERNODE2.home:11000/Status
+
+curl http://POWERNODE2.home:11000/Volume
+
+http://192.168.1.100:11000/Volume?level=15
+Sets the player volume level to 15 (out of 100).
+
+http://192.168.1.100:11000/Play?inputType=spdif&index=1
+Start audio playback using the first input port of the player.
+
+http://192.168.1.100:11000/Stop
+
+curl http://POWERNODE2.home:11000/Presets
+
+/Preset?id=presetId|-1|+1

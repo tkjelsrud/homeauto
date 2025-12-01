@@ -1,0 +1,7 @@
+{
+  "mandag": ["Start 8:45", "Samfunnsfag", "Engelsk", "Mat/helse", "Slutt 13:45"],
+  "tirsdag": ["Start 8:15", "Naturfag", "Engelsk", "Samfunnsfag", "KRLE", "Slutt 13:45"],
+  "onsdag": ["Start 8:15", "Norsk", "Fysisk", "Matte", "KRLE", "Kroppsøving", "Slutt 14:15"],
+  "torsdag": ["Start 8:15", "Norsk", "Matte", "Musikk", "Slutt 13:00"],
+  "fredag": ["Start 8:15", "Matte", "Norsk", "Kuns/håndverk", "Slutt 13:45"]
+}

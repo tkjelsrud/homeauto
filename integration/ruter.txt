@@ -1,0 +1,7 @@
+curl -s "https://api.entur.io/geocoder/v1/autocomplete?text=Stig" | jq .
+
+Stig: NSR:StopPlace:6013
+curl -s "https://api.ruter.no/reisapi/api/v2/departures?stopid=NSR:StopPlace:6013"
+
+
+https://mon.ruter.no/departures/59.947207-10.817694/N4Igrgzgpgwg9gGzAWwHYBkCGBPOYAuIAXAGaYLQA0IARnJgE4AmExA2qBPnAA4AKCTAGMoASRbsQAOQDKAJSIzu-QSKIA2AAwBGAMwgAutSZRB2KEyWN8AFQCWyKMQBM1ABZ2mJjHdRRWRMAAvtSoKDRQDADyJAAiUDzWYAz+xACs1Ph2+AhORCBKdgDmIMZ2EJg0uUw2DJioEDxwDPgAsnAmAWxGIFColdXE+AxgUO6eULXCANbwSGjEZBRQIZzKAsJiEkRs0vKK66pQGjqahsamOBZWLfaOxJrjXn3ovqmBISBhyBHRcQlJFIBAAcmWyuWIIBscAafTcmCKfQABNwGCUyhUqhYpg0mi12p12D0+gMLItyFQQB4TFMhLNEChUOTlkEegA3SIQOwwlxBIA
