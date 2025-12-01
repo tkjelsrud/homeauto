@@ -1,6 +1,6 @@
 from flask import Flask, send_from_directory, render_template, jsonify
-from web.routes import routes
-from web.config import CONFIG
+from routes import routes
+from config import CONFIG
 
 
 app = Flask(__name__)
