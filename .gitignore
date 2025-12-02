@@ -30,6 +30,3 @@ config.json.serv
 integration/*.txt
 integration/*.json
 web/integration/timeplaner/*.json
-
-# Test files
-test_*.py
