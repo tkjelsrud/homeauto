@@ -160,6 +160,15 @@
             padding: 0 !important;
         }
 
+        .weather-icon {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #EEC14D;
+            display: inline-block;
+            min-width: 1.5em;
+            text-align: center;
+        }
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
@@ -173,18 +182,76 @@
 
    <script>
     const weatherIcons = {
-        "clearsky": "☀️",
-        "partlycloudy": "⛅",
-        "cloudy": "☁️",
-        "rainshowers": "🌦",
+        "clearsky_day": "☼",
+        "clearsky_night": "☽",
+        "clearsky_polartwilight": "☼",
+        "fair_day": "☼",
+        "fair_night": "☽",
+        "fair_polartwilight": "☼",
+        "partlycloudy_day": "⛅",
+        "partlycloudy_night": "☁",
+        "partlycloudy_polartwilight": "⛅",
+        "cloudy": "☁",
+        "rainshowers_day": "🌦",
+        "rainshowers_night": "🌧",
+        "rainshowers_polartwilight": "🌦",
         "lightrain": "🌧",
-        "heavyrain": "🌧🌧",
-        "thunderstorm": "⛈",
-        "snow": "❄️"
+        "rain": "🌧",
+        "heavyrain": "🌧",
+        "lightrainshowers_day": "🌦",
+        "lightrainshowers_night": "🌧",
+        "lightrainshowers_polartwilight": "🌦",
+        "heavyrainshowers_day": "🌧",
+        "heavyrainshowers_night": "🌧",
+        "heavyrainshowers_polartwilight": "🌧",
+        "lightrainandthunder": "⛈",
+        "rainandthunder": "⛈",
+        "heavyrainandthunder": "⛈",
+        "lightrainshowersandthunder_day": "⛈",
+        "lightrainshowersandthunder_night": "⛈",
+        "lightrainshowersandthunder_polartwilight": "⛈",
+        "rainshowersandthunder_day": "⛈",
+        "rainshowersandthunder_night": "⛈",
+        "rainshowersandthunder_polartwilight": "⛈",
+        "heavyrainshowersandthunder_day": "⛈",
+        "heavyrainshowersandthunder_night": "⛈",
+        "heavyrainshowersandthunder_polartwilight": "⛈",
+        "lightsleet": "🌨",
+        "sleet": "🌨",
+        "heavysleet": "🌨",
+        "lightsleetshowers_day": "🌨",
+        "lightsleetshowers_night": "🌨",
+        "lightsleetshowers_polartwilight": "🌨",
+        "sleetshowers_day": "🌨",
+        "sleetshowers_night": "🌨",
+        "sleetshowers_polartwilight": "🌨",
+        "heavysleetshowers_day": "🌨",
+        "heavysleetshowers_night": "🌨",
+        "heavysleetshowers_polartwilight": "🌨",
+        "lightsnow": "❄",
+        "snow": "❄",
+        "heavysnow": "❄",
+        "lightsnowshowers_day": "❄",
+        "lightsnowshowers_night": "❄",
+        "lightsnowshowers_polartwilight": "❄",
+        "snowshowers_day": "❄",
+        "snowshowers_night": "❄",
+        "snowshowers_polartwilight": "❄",
+        "heavysnowshowers_day": "❄",
+        "heavysnowshowers_night": "❄",
+        "heavysnowshowers_polartwilight": "❄",
+        "fog": "≡",
+        "thunderstorm": "⛈"
     };
 
     function getCustomWeatherIcon(symbolCode) {
-        return (weatherIcons[symbolCode] || "❓") + " " + symbolCode;  // Default icon if unknown
+        // Remove "_day", "_night", "_polartwilight" suffix for matching if not found
+        let icon = weatherIcons[symbolCode];
+        if (!icon) {
+            const baseCode = symbolCode.replace(/_(day|night|polartwilight)$/, "");
+            icon = weatherIcons[baseCode] || "?";
+        }
+        return `<span class="weather-icon">${icon}</span>`;
     }
 
     function getShortDay(dateString) {
@@ -495,13 +562,6 @@
                         Object.keys(rooms).forEach(roomName => {
                             const devices = rooms[roomName];
                             
-                            // Room header
-                            const roomHeader = document.createElement("div");
-                            roomHeader.classList.add("float", "biggar");
-                            roomHeader.style.marginTop = "10px";
-                            roomHeader.textContent = roomName;
-                            widgetDiv.appendChild(roomHeader);
-                            
                             // Devices in room
                             devices.forEach(device => {
                                 const deviceDiv = document.createElement("div");
@@ -538,10 +598,9 @@
                                 
                                 deviceDiv.classList.add(connectedClass);
                                 deviceDiv.innerHTML = `
-                                    <strong>${device.name}</strong> ${connectedIcon}<br>
-                                    <span style="font-size: 24px; font-weight: bold; color: ${tempColor}">${ambientTemp}°C</span><br>
-                                    <span style="font-size: 14px; color: #888;">Mål: ${targetTemp}°C</span><br>
-                                    Effekt: ${power}W
+                                    <strong>${roomName}</strong> ${connectedIcon}<br>
+                                    <span style="font-size: 24px; font-weight: bold; color: ${tempColor}">${ambientTemp}°C</span> / <span style="font-size: 16px; color: #aaa;">${targetTemp}°C</span><br>
+                                    ${power}W
                                 `;
                                 
                                 widgetDiv.appendChild(deviceDiv);
