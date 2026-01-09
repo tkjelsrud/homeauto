@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, render_template_string
-import subprocess, os
+import subprocess, os, logging
 from config import CONFIG
 from integration.calendar import get_calendar, get_calendarweek
 from integration.weather import get_weather
@@ -11,6 +11,8 @@ from integration.network import get_network
 from integration.bluesound import get_powernode
 from integration.timeplan import get_dagens_timeplaner, get_dagens_dag
 from integration.mill import authenticate, get_mill_devices
+from integration.renovation import get_renovation_costs
+from integration.trello import get_trello_tasks
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -342,3 +344,31 @@ def update():
         </body>
         </html>
         """, 500
+
+@routes.route("/renovation", methods=["GET"])
+def renovation():
+    try:
+        # Fetch renovation costs from Google Sheets CSV
+        costs_data = get_renovation_costs(CONFIG['RENOVATION_CSV_URL'])
+        
+        # Fetch tasks from Trello "I arbeid" list
+        tasks = []
+        try:
+            tasks = get_trello_tasks(
+                CONFIG['TRELLO_API_KEY'],
+                CONFIG['TRELLO_TOKEN'],
+                CONFIG['TRELLO_BOARD_ID']
+            )
+        except Exception as e:
+            logging.error(f"Trello fetch failed: {e}")
+        
+        # Combine data
+        result = {
+            "costs": costs_data,
+            "tasks": tasks
+        }
+        
+        return api_response("🏠 Oppussing", "🏠", result, 30 * MINUTE)
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
