@@ -692,43 +692,45 @@
                         widgetDiv.appendChild(tasksContainer);
                     }
                     
-                    // Total cost display
-                    if (renovationData.costs && renovationData.costs.total) {
-                        const totalDiv = document.createElement("div");
-                        totalDiv.classList.add("float", "biggar");
-                        totalDiv.style.textAlign = "center";
-                        totalDiv.style.padding = "8px";
-                        totalDiv.style.width = "calc(100% - 24px)";
-                        totalDiv.style.borderTop = "2px solid #414639";
-                        totalDiv.style.marginTop = "4px";
-                        const formattedTotal = renovationData.costs.total.toLocaleString('nb-NO', {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 0
-                        });
-                        totalDiv.innerHTML = `💰 Total: ${formattedTotal},-`;
-                        widgetDiv.appendChild(totalDiv);
-                    }
-
-                    // Categories
-                    if (renovationData.costs && renovationData.costs.categories) {
-                        const categories = renovationData.costs.categories;
-                        Object.keys(categories).forEach(category => {
-                            const value = categories[category];
-                            const categoryDiv = document.createElement("div");
-                            categoryDiv.classList.add("float");
-                            
-                            // Format number if it's a number
-                            let displayValue = value;
-                            if (typeof value === 'number') {
-                                displayValue = value.toLocaleString('nb-NO', {
-                                    minimumFractionDigits: 0,
-                                    maximumFractionDigits: 0
-                                }) + ',-';
+                    // Costs display - compact format
+                    if (renovationData.costs) {
+                        const costsDiv = document.createElement("div");
+                        costsDiv.style.padding = "8px";
+                        costsDiv.style.fontSize = "14px";
+                        costsDiv.style.color = "#aaa";
+                        costsDiv.style.borderTop = "1px solid #414639";
+                        costsDiv.style.marginTop = "4px";
+                        
+                        let costsText = "";
+                        
+                        // Format numbers in compact format (M for millions, k for thousands)
+                        const formatCompact = (num) => {
+                            if (num >= 1000000) {
+                                return (num / 1000000).toFixed(1) + "M";
+                            } else if (num >= 1000) {
+                                return Math.round(num / 1000) + "k";
                             }
-                            
-                            categoryDiv.innerHTML = `<strong>${category}</strong><br>${displayValue}`;
-                            widgetDiv.appendChild(categoryDiv);
-                        });
+                            return num.toString();
+                        };
+                        
+                        // Total
+                        if (renovationData.costs.total) {
+                            costsText += `💰 ${formatCompact(renovationData.costs.total)}`;
+                        }
+                        
+                        // Categories
+                        if (renovationData.costs.categories) {
+                            const categories = renovationData.costs.categories;
+                            Object.keys(categories).forEach(category => {
+                                const value = categories[category];
+                                if (typeof value === 'number') {
+                                    costsText += ` • ${category}: ${formatCompact(value)}`;
+                                }
+                            });
+                        }
+                        
+                        costsDiv.textContent = costsText;
+                        widgetDiv.appendChild(costsDiv);
                     }
                 }
                 else if(endpoint === "/music") {
