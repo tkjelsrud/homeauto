@@ -673,6 +673,12 @@
                             const li = document.createElement("li");
                             li.style.marginBottom = "2px";
                             
+                            // Style completed tasks
+                            if (task.completed) {
+                                li.style.color = "#666";
+                                li.style.textDecoration = "line-through";
+                            }
+                            
                             let taskText = task.name;
                             if (task.labels && task.labels.length > 0) {
                                 taskText += ` <span class="add">[${task.labels.join(", ")}]</span>`;
@@ -689,10 +695,12 @@
                     // Total cost display
                     if (renovationData.costs && renovationData.costs.total) {
                         const totalDiv = document.createElement("div");
-                        totalDiv.classList.add("float", "biggar", "active");
+                        totalDiv.classList.add("float", "biggar");
                         totalDiv.style.textAlign = "center";
                         totalDiv.style.padding = "8px";
                         totalDiv.style.width = "calc(100% - 24px)";
+                        totalDiv.style.borderTop = "2px solid #414639";
+                        totalDiv.style.marginTop = "4px";
                         const formattedTotal = renovationData.costs.total.toLocaleString('nb-NO', {
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 0

@@ -37,7 +37,7 @@ def get_trello_tasks(api_key, token, board_id, list_name="I arbeid"):
         params = {
             "key": api_key,
             "token": token,
-            "fields": "name,labels,due,desc"
+            "fields": "name,labels,due,desc,dueComplete"
         }
         
         response = requests.get(cards_url, params=params, timeout=10)
@@ -53,7 +53,8 @@ def get_trello_tasks(api_key, token, board_id, list_name="I arbeid"):
                 "name": card["name"],
                 "labels": label_names,
                 "due": card.get("due"),
-                "description": card.get("desc", "")
+                "description": card.get("desc", ""),
+                "completed": card.get("dueComplete", False)
             })
         
         return tasks
