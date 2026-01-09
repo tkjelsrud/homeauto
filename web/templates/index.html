@@ -347,15 +347,19 @@
                     widgetDiv.appendChild(list);
                 }
                 else if (endpoint === "/bigcalendar") {
+                    try {
+                        if (!widgetData.data || !Array.isArray(widgetData.data)) {
+                            throw new Error("Invalid calendar data structure");
+                        }
 
-                    const todayIndex = new Date().getDay();  
-                    const correctedToday = (todayIndex + 6) % 7;
+                        const todayIndex = new Date().getDay();  
+                        const correctedToday = (todayIndex + 6) % 7;
 
-                    const week = widgetData.data;  // array med 7 dager
-                    const list = document.createElement("div");
-                    list.classList.add("week-grid"); // hvis du vil lage grid i CSS
+                        const week = widgetData.data;  // array med 7 dager
+                        const list = document.createElement("div");
+                        list.classList.add("week-grid"); // hvis du vil lage grid i CSS
 
-                    week.forEach(day => {
+                        week.forEach(day => {
                         const dayColumn = document.createElement("div");
                         dayColumn.classList.add("calday");
 
@@ -379,7 +383,7 @@
                         const eventList = document.createElement("ul");
 
                         // Ingen events?
-                        if (day.events.length === 0) {
+                        if (!day.events || day.events.length === 0) {
                             const empty = document.createElement("li");
                             empty.classList.add("subdue");
                             empty.textContent = "Ingen hendelser";
@@ -387,29 +391,33 @@
                         }
 
                         day.events.forEach(evt => {
-                            const li = document.createElement("li");
+                            try {
+                                const li = document.createElement("li");
 
-                            // Fargelegg neste-uke-eventer
-                            if (evt.is_next_week) {
-                                li.classList.add("nextweek"); // legg til CSS
+                                // Fargelegg neste-uke-eventer
+                                if (evt.is_next_week) {
+                                    li.classList.add("nextweek"); // legg til CSS
+                                }
+
+                                const dt = new Date(evt.start);
+                                const dateStr = dt.toLocaleDateString("no-NO");
+                                const timeStr = dt.toLocaleTimeString("no-NO", {
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                });
+
+                                li.innerHTML = `
+                                    <div>
+                                        <span class="add">${timeStr}</span>
+                                        ${evt.summary || "Ingen tittel"}
+                                        ${evt.is_next_week ? ` <span class="subdue">(neste uke)</span>` : ""}
+                                    </div>
+                                `;
+
+                                eventList.appendChild(li);
+                            } catch (err) {
+                                console.error("Error rendering event:", err, evt);
                             }
-
-                            const dt = new Date(evt.start);
-                            const dateStr = dt.toLocaleDateString("no-NO");
-                            const timeStr = dt.toLocaleTimeString("no-NO", {
-                                hour: "2-digit",
-                                minute: "2-digit"
-                            });
-
-                            li.innerHTML = `
-                                <div>
-                                    <span class="add">${timeStr}</span>
-                                    ${evt.summary}
-                                    ${evt.is_next_week ? ` <span class="subdue">(neste uke)</span>` : ""}
-                                </div>
-                            `;
-
-                            eventList.appendChild(li);
                         });
 
                         dayColumn.appendChild(eventList);
@@ -476,9 +484,17 @@
                         }
 
                         list.appendChild(dayColumn);
-                    });
+                        });
 
-                    widgetDiv.appendChild(list);
+                        widgetDiv.appendChild(list);
+                    } catch (error) {
+                        console.error("Bigcalendar render error:", error);
+                        const errorDiv = document.createElement("div");
+                        errorDiv.style.padding = "10px";
+                        errorDiv.style.color = "#ff6b6b";
+                        errorDiv.textContent = "⚠️ Kunne ikke laste kalender: " + error.message;
+                        widgetDiv.appendChild(errorDiv);
+                    }
                 }
                 else if(endpoint === "/lights") {
                     const ph = document.createElement("div");
@@ -715,6 +731,27 @@
             
         } catch (error) {
             console.error(`Error loading ${endpoint}:`, error);
+            
+            // Show error in widget
+            const widgetId = `widget-${endpoint.replace("/", "")}`;
+            let widgetDiv = document.getElementById(widgetId);
+            
+            if (!widgetDiv) {
+                widgetDiv = document.createElement("div");
+                widgetDiv.id = widgetId;
+                widgetDiv.classList.add("widget");
+                document.getElementById("main").appendChild(widgetDiv);
+            }
+            
+            widgetDiv.innerHTML = `
+                <div style="padding: 10px; color: #ff6b6b;">
+                    <strong>⚠️ Widget Error: ${endpoint}</strong><br>
+                    <span style="font-size: 12px; color: #aaa;">${error.message}</span>
+                </div>
+            `;
+            
+            // Retry after 30 seconds
+            setTimeout(() => updateWidget(endpoint), 30000);
         }
     }
 

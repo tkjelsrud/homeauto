@@ -28,90 +28,118 @@ def adjust_to_norwegian_time(event_datetime):
     return event_datetime  # Return unchanged if it's already a date object
 
 def get_calendar(URL):
-    response = requests.get(URL)
-    calendar_data = icalendar.Calendar.from_ical(response.text)
+    try:
+        response = requests.get(URL, timeout=10)
+        response.raise_for_status()
+        calendar_data = icalendar.Calendar.from_ical(response.text)
 
-    events = []
-    now = datetime.now(timezone.utc).date()  # Convert to `date` type for comparison
-    end_date = now + timedelta(days=7)  # 7 days ahead
+        events = []
+        now = datetime.now(timezone.utc).date()  # Convert to `date` type for comparison
+        end_date = now + timedelta(days=7)  # 7 days ahead
 
-    for component in calendar_data.walk():
-        if component.name == "VEVENT":
-            event_start = component.get("DTSTART").dt  # Can be `date` or `datetime`
-            event_summary = component.get("SUMMARY")
+        for component in calendar_data.walk():
+            if component.name == "VEVENT":
+                try:
+                    event_start = component.get("DTSTART").dt  # Can be `date` or `datetime`
+                    event_summary = component.get("SUMMARY")
 
-            # Adjust for Norwegian time
-            if isinstance(event_start, datetime):
-                event_start = adjust_to_norwegian_time(event_start)
-                formatted_start = event_start.strftime("%Y-%m-%d %H:%M:%S")  # Keep time format
-                event_date = event_start.date()  # Extract just the date for comparison
+                    # Adjust for Norwegian time
+                    if isinstance(event_start, datetime):
+                        event_start = adjust_to_norwegian_time(event_start)
+                        formatted_start = event_start.strftime("%Y-%m-%d %H:%M:%S")  # Keep time format
+                        event_date = event_start.date()  # Extract just the date for comparison
 
-            # Handle all-day events (date only)
-            elif isinstance(event_start, date):
-                formatted_start = event_start.strftime("%Y-%m-%d")
-                event_date = event_start  # Already a date, no need to extract
+                    # Handle all-day events (date only)
+                    elif isinstance(event_start, date):
+                        formatted_start = event_start.strftime("%Y-%m-%d")
+                        event_date = event_start  # Already a date, no need to extract
 
-            # Compare by date only
-            if now <= event_date <= end_date:
-                events.append({"summary": event_summary, "start": formatted_start})
+                    # Compare by date only
+                    if now <= event_date <= end_date:
+                        events.append({"summary": event_summary or "Ingen tittel", "start": formatted_start})
+                except Exception as e:
+                    logging.warning(f"Skipping malformed calendar event: {e}")
+                    continue
 
-    return events
+        return events
+    except requests.RequestException as e:
+        logging.error(f"Failed to fetch calendar from {URL}: {e}")
+        raise
+    except Exception as e:
+        logging.error(f"Error parsing calendar data: {e}")
+        raise
 
 def get_calendarweek(URL):
-    response = requests.get(URL)
-    cal = icalendar.Calendar.from_ical(response.text)
+    try:
+        response = requests.get(URL, timeout=10)
+        response.raise_for_status()
+        cal = icalendar.Calendar.from_ical(response.text)
 
-    events = []
-    now = datetime.now(timezone.utc)
-    today = now.date()
+        events = []
+        now = datetime.now(timezone.utc)
+        today = now.date()
 
-    # Denne ukens og neste ukes ISO-nummer
-    this_iso_year, this_iso_week, _ = today.isocalendar()
-    next_iso_week = this_iso_week + 1
+        # Denne ukens og neste ukes ISO-nummer
+        this_iso_year, this_iso_week, _ = today.isocalendar()
+        next_iso_week = this_iso_week + 1
 
-    for component in cal.walk():
-        if component.name != "VEVENT":
-            continue
+        for component in cal.walk():
+            if component.name != "VEVENT":
+                continue
 
-        # Skip recurring for now
-        if component.get("RRULE"):
-            continue
+            try:
+                # Skip recurring for now
+                if component.get("RRULE"):
+                    continue
 
-        start = component.get("DTSTART").dt
-        summary = component.get("SUMMARY")
+                start = component.get("DTSTART")
+                if not start:
+                    continue
+                    
+                start = start.dt
+                summary = component.get("SUMMARY")
 
-        # Normaliser tid
-        if isinstance(start, datetime):
-            start_local = adjust_to_norwegian_time(start)
-        else:
-            # All-day event → midnight converted to Norwegian time
-            naive = datetime(start.year, start.month, start.day, 0, 0, tzinfo=timezone.utc)
-            start_local = adjust_to_norwegian_time(naive)
+                # Normaliser tid
+                if isinstance(start, datetime):
+                    start_local = adjust_to_norwegian_time(start)
+                else:
+                    # All-day event → midnight converted to Norwegian time
+                    naive = datetime(start.year, start.month, start.day, 0, 0, tzinfo=timezone.utc)
+                    start_local = adjust_to_norwegian_time(naive)
 
-        event_date = start_local.date()
-        formatted = start_local.strftime("%Y-%m-%d %H:%M:%S")
+                event_date = start_local.date()
+                formatted = start_local.strftime("%Y-%m-%d %H:%M:%S")
 
-        # ISO uke for eventet
-        event_iso_year, event_iso_week, _ = event_date.isocalendar()
+                # ISO uke for eventet
+                event_iso_year, event_iso_week, _ = event_date.isocalendar()
 
-        # --- HARD FILTER HERE ---
-        # Ta KUN denne uken + neste uke
-        if not (
-            (event_iso_year == this_iso_year and event_iso_week == this_iso_week) or
-            (event_iso_year == this_iso_year and event_iso_week == next_iso_week)
-        ):
-            continue
+                # --- HARD FILTER HERE ---
+                # Ta KUN denne uken + neste uke
+                if not (
+                    (event_iso_year == this_iso_year and event_iso_week == this_iso_week) or
+                    (event_iso_year == this_iso_year and event_iso_week == next_iso_week)
+                ):
+                    continue
 
-        # Ukeoffset
-        week_offset = event_iso_week - this_iso_week
+                # Ukeoffset
+                week_offset = event_iso_week - this_iso_week
 
-        weekday_index = event_date.weekday()
+                weekday_index = event_date.weekday()
 
-        events.append({
-            "summary": summary,
-            "start": formatted,
-            "weekday_index": weekday_index,
-            "week_offset": week_offset
-        })
+                events.append({
+                    "summary": summary or "Ingen tittel",
+                    "start": formatted,
+                    "weekday_index": weekday_index,
+                    "week_offset": week_offset
+                })
+            except Exception as e:
+                logging.warning(f"Skipping malformed calendar event: {e}")
+                continue
 
-    return events
+        return events
+    except requests.RequestException as e:
+        logging.error(f"Failed to fetch calendar from {URL}: {e}")
+        raise
+    except Exception as e:
+        logging.error(f"Error parsing calendar data: {e}")
+        raise

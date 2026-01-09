@@ -73,11 +73,8 @@ def calendar():
 def bigcalendar():
     try:
         from datetime import datetime, timedelta
+        import logging
         
-        calendar_data = get_calendarweek(CONFIG['calendar'])
-        dinner_data   = get_dinnerweek(CONFIG['DINNERURL'])
-        waste_data    = get_garbage(CONFIG['GARBAGEURL'])
-
         # Sett opp 7 tomme ukedager (mandag–søndag)
         days = [
             {
@@ -90,6 +87,27 @@ def bigcalendar():
             }
             for i in range(7)
         ]
+        
+        # Fetch calendar data with error handling
+        calendar_data = []
+        try:
+            calendar_data = get_calendarweek(CONFIG['calendar'])
+        except Exception as e:
+            logging.error(f"Calendar fetch failed: {e}")
+        
+        # Fetch dinner data with error handling
+        dinner_data = {"days": []}
+        try:
+            dinner_data = get_dinnerweek(CONFIG['DINNERURL'])
+        except Exception as e:
+            logging.error(f"Dinner fetch failed: {e}")
+        
+        # Fetch waste data with error handling
+        waste_data = {}
+        try:
+            waste_data = get_garbage(CONFIG['GARBAGEURL'])
+        except Exception as e:
+            logging.error(f"Waste fetch failed: {e}")
 
         # Middagsplan har alltid week_offset = 0 → denne ukens middag
         for dinner in dinner_data["days"]:
@@ -110,10 +128,13 @@ def bigcalendar():
             })
 
         # Hent timeplaner for dagens dag (kun ukedager 0-4)
-        today_index = datetime.now().weekday()
-        if 0 <= today_index <= 4:  # Mandag til Fredag
-            timeplaner_data = get_dagens_timeplaner(CONFIG['TIMEPLANER_MAPPE'])
-            days[today_index]["timeplaner"] = timeplaner_data
+        try:
+            today_index = datetime.now().weekday()
+            if 0 <= today_index <= 4:  # Mandag til Fredag
+                timeplaner_data = get_dagens_timeplaner(CONFIG['TIMEPLANER_MAPPE'])
+                days[today_index]["timeplaner"] = timeplaner_data
+        except Exception as e:
+            logging.error(f"Timeplaner fetch failed: {e}")
 
         # Søppelhenting - legg til hvis det er denne uken
         today = datetime.now().date()
