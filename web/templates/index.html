@@ -826,16 +826,18 @@
                         list.appendChild(vocDiv);
                     }
                     
-                    // Battery
+                    widgetDiv.appendChild(list);
+                    
+                    // Battery - small grey text at bottom
                     if (data.battery != null) {
                         const battDiv = document.createElement("div");
-                        battDiv.classList.add("float");
-                        battDiv.classList.add(data.battery < 20 ? "off" : "on");
-                        battDiv.innerHTML = `🔋 ${data.battery}%`;
-                        list.appendChild(battDiv);
+                        battDiv.style.fontSize = "11px";
+                        battDiv.style.color = "#666";
+                        battDiv.style.marginTop = "6px";
+                        battDiv.style.textAlign = "center";
+                        battDiv.innerHTML = `🔋 Batteri: ${data.battery}%`;
+                        widgetDiv.appendChild(battDiv);
                     }
-                    
-                    widgetDiv.appendChild(list);
                 }
                 else if(endpoint === "/dinner") {
                     const list = document.createElement("ul");
