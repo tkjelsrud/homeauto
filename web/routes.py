@@ -389,7 +389,7 @@ def airthings():
         if "error" in airthings_data:
             return jsonify(airthings_data), 500
         
-        return api_response("Luftkvalitet", "🌬️", airthings_data, 5 * MINUTE)
+        return api_response("Luftkvalitet", "🌬️", airthings_data, 15 * MINUTE)
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
