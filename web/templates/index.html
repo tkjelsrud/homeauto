@@ -388,37 +388,62 @@
                             empty.classList.add("subdue");
                             empty.textContent = "Ingen hendelser";
                             eventList.appendChild(empty);
-                        }
+                        } else {
+                            // Separate this week and next week events
+                            const thisWeekEvents = day.events.filter(evt => !evt.is_next_week);
+                            const nextWeekEvents = day.events.filter(evt => evt.is_next_week);
 
-                        day.events.forEach(evt => {
-                            try {
-                                const li = document.createElement("li");
+                            // Render this week events first
+                            thisWeekEvents.forEach(evt => {
+                                try {
+                                    const li = document.createElement("li");
+                                    const dt = new Date(evt.start);
+                                    const timeStr = dt.toLocaleTimeString("no-NO", {
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    });
 
-                                // Fargelegg neste-uke-eventer
-                                if (evt.is_next_week) {
-                                    li.classList.add("nextweek"); // legg til CSS
+                                    li.innerHTML = `
+                                        <div>
+                                            <span class="add">${timeStr}</span>
+                                            ${evt.summary || "Ingen tittel"}
+                                        </div>
+                                    `;
+                                    eventList.appendChild(li);
+                                } catch (err) {
+                                    console.error("Error rendering event:", err, evt);
                                 }
+                            });
 
-                                const dt = new Date(evt.start);
-                                const dateStr = dt.toLocaleDateString("no-NO");
-                                const timeStr = dt.toLocaleTimeString("no-NO", {
-                                    hour: "2-digit",
-                                    minute: "2-digit"
+                            // Render next week events at the bottom with header
+                            if (nextWeekEvents.length > 0) {
+                                const separator = document.createElement("li");
+                                separator.innerHTML = `<div class="subdue" style="margin-top: 8px; margin-bottom: 2px;">Neste uke:</div>`;
+                                eventList.appendChild(separator);
+
+                                nextWeekEvents.forEach(evt => {
+                                    try {
+                                        const li = document.createElement("li");
+                                        li.classList.add("subdue");
+                                        const dt = new Date(evt.start);
+                                        const timeStr = dt.toLocaleTimeString("no-NO", {
+                                            hour: "2-digit",
+                                            minute: "2-digit"
+                                        });
+
+                                        li.innerHTML = `
+                                            <div>
+                                                <span class="add">${timeStr}</span>
+                                                ${evt.summary || "Ingen tittel"}
+                                            </div>
+                                        `;
+                                        eventList.appendChild(li);
+                                    } catch (err) {
+                                        console.error("Error rendering event:", err, evt);
+                                    }
                                 });
-
-                                li.innerHTML = `
-                                    <div>
-                                        <span class="add">${timeStr}</span>
-                                        ${evt.summary || "Ingen tittel"}
-                                        ${evt.is_next_week ? ` <span class="subdue">(neste uke)</span>` : ""}
-                                    </div>
-                                `;
-
-                                eventList.appendChild(li);
-                            } catch (err) {
-                                console.error("Error rendering event:", err, evt);
                             }
-                        });
+                        }
 
                         dayColumn.appendChild(eventList);
 
