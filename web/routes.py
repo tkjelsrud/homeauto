@@ -13,6 +13,7 @@ from integration.timeplan import get_dagens_timeplaner, get_dagens_dag
 from integration.mill import authenticate, get_mill_devices
 from integration.renovation import get_renovation_costs
 from integration.trello import get_trello_tasks
+from integration.airthings import get_airthings
 
 # Define a Blueprint for routes
 routes = Blueprint("routes", __name__)
@@ -369,6 +370,26 @@ def renovation():
         }
         
         return api_response("🏠 Oppussing", "🏠", result, 30 * MINUTE)
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@routes.route("/airthings", methods=["GET"])
+def airthings():
+    try:
+        # Get Airthings MAC address from config
+        mac_address = CONFIG.get('AIRTHINGS_MAC')
+        
+        if not mac_address:
+            return jsonify({"error": "AIRTHINGS_MAC not configured"}), 500
+        
+        # Fetch data from Airthings device
+        airthings_data = get_airthings(mac_address)
+        
+        if "error" in airthings_data:
+            return jsonify(airthings_data), 500
+        
+        return api_response("Luftkvalitet", "🌬️", airthings_data, 5 * MINUTE)
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500

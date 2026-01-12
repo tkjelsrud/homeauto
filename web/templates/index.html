@@ -715,7 +715,7 @@
                         
                         // Total
                         if (renovationData.costs.total) {
-                            costsText += `💰 ${formatCompact(renovationData.costs.total)}`;
+                            costsText += `Kr ${formatCompact(renovationData.costs.total)}`;
                         }
                         
                         // Categories
@@ -747,6 +747,69 @@
                     listItem.innerHTML = `<p>${we.title}: ${we.state} | Volume: ${we.volume} <span="subdue">(${we.db} db)</span></p>`;
                     list.appendChild(listItem);
 
+                    widgetDiv.appendChild(list);
+                }
+                else if(endpoint === "/airthings") {
+                    const ph = document.createElement("div");
+                    ph.classList.add('title');
+                    ph.innerHTML = `<span class="icon">${widgetData.icon}</span> ${widgetData.title}`;
+                    widgetDiv.appendChild(ph);
+
+                    const data = widgetData.data;
+                    const list = document.createElement("div");
+                    
+                    // Temperature - big and prominent
+                    if (data.temperature != null) {
+                        const tempDiv = document.createElement("div");
+                        tempDiv.classList.add("float", "biggar", "active");
+                        tempDiv.innerHTML = `${data.temperature.toFixed(1)}°C`;
+                        list.appendChild(tempDiv);
+                    }
+                    
+                    // Humidity
+                    if (data.humidity != null) {
+                        const humDiv = document.createElement("div");
+                        humDiv.classList.add("float", "off");
+                        humDiv.innerHTML = `💧 ${data.humidity.toFixed(1)}%`;
+                        list.appendChild(humDiv);
+                    }
+                    
+                    // Radon 24h
+                    if (data.radon_24h != null) {
+                        const radonDiv = document.createElement("div");
+                        radonDiv.classList.add("float");
+                        const level = data.radon_24h_level || '';
+                        const levelClass = level === 'good' ? 'on' : (level === 'poor' ? 'off' : '');
+                        if (levelClass) radonDiv.classList.add(levelClass);
+                        radonDiv.innerHTML = `☢️ Radon: ${data.radon_24h} Bq/m³`;
+                        list.appendChild(radonDiv);
+                    }
+                    
+                    // CO2
+                    if (data.co2 != null) {
+                        const co2Div = document.createElement("div");
+                        co2Div.classList.add("float", "off");
+                        co2Div.innerHTML = `CO₂: ${Math.round(data.co2)} ppm`;
+                        list.appendChild(co2Div);
+                    }
+                    
+                    // VOC
+                    if (data.voc != null) {
+                        const vocDiv = document.createElement("div");
+                        vocDiv.classList.add("float", "off");
+                        vocDiv.innerHTML = `VOC: ${Math.round(data.voc)} ppb`;
+                        list.appendChild(vocDiv);
+                    }
+                    
+                    // Battery
+                    if (data.battery != null) {
+                        const battDiv = document.createElement("div");
+                        battDiv.classList.add("float");
+                        battDiv.classList.add(data.battery < 20 ? "off" : "on");
+                        battDiv.innerHTML = `🔋 ${data.battery}%`;
+                        list.appendChild(battDiv);
+                    }
+                    
                     widgetDiv.appendChild(list);
                 }
                 else if(endpoint === "/dinner") {
