@@ -781,7 +781,15 @@
                     widgetDiv.appendChild(ph);
 
                     const data = widgetData.data;
-                    const list = document.createElement("div");
+                    
+                    // Check for errors or missing data
+                    if (!data || data.error) {
+                        const errorDiv = document.createElement("div");
+                        errorDiv.classList.add("float", "off");
+                        errorDiv.textContent = data?.error || "Ingen data tilgjengelig";
+                        widgetDiv.appendChild(errorDiv);
+                    } else {
+                        const list = document.createElement("div");
                     
                     // Temperature - big and prominent
                     if (data.temperature != null) {
@@ -837,6 +845,7 @@
                         battDiv.style.textAlign = "center";
                         battDiv.innerHTML = `🔋 Batteri: ${data.battery}%`;
                         widgetDiv.appendChild(battDiv);
+                    }
                     }
                 }
                 else if(endpoint === "/dinner") {
