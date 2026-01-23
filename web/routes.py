@@ -3,7 +3,7 @@ import subprocess, os, logging
 from config import CONFIG
 from integration.calendar import get_calendar, get_calendarweek
 from integration.weather import get_weather
-from integration.lights import get_zones
+from integration.lights import get_zones, get_outdoor_sensor_temperatures
 from integration.dinner import get_dinner, get_dinnerweek
 from integration.energy import get_hvakosterstrom
 from integration.waste import get_garbage
@@ -180,10 +180,17 @@ def bigcalendar():
 @routes.route("/lights", methods=["GET"])
 def lights():
     try:
-        # Fetch and parse calendar data from CONFIG
+        # Fetch zones and outdoor sensor temperatures
         zone_data = get_zones(CONFIG['PHILIPSHUE_HOST'], CONFIG['PHILIPSHUE_KEY'])
+        outdoor_temps = get_outdoor_sensor_temperatures(CONFIG['PHILIPSHUE_HOST'], CONFIG['PHILIPSHUE_KEY'])
+        
+        # Combine data
+        lights_data = {
+            "zones": zone_data,
+            "outdoor_sensors": outdoor_temps
+        }
 
-        return api_response("Lys", "✨", zone_data, 30)
+        return api_response("Lys", "✨", lights_data, 30)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -34,3 +34,51 @@ def get_zones(HUEHOST, APIKEY):
     except requests.RequestException as e:
         logging.error(f"Error connecting to Hue Bridge: {e}")
         return None
+
+
+def get_outdoor_sensor_temperatures(HUEHOST, APIKEY):
+    """
+    Find Philips Hue outdoor sensors and return their temperatures.
+    
+    Returns:
+        list: Array of temperature readings in Celsius from outdoor sensors
+    """
+    URL = f"http://{HUEHOST}/api/{APIKEY}/sensors"
+
+    try:
+        response = requests.get(URL)
+        if response.status_code != 200:
+            logging.error(f"Failed to retrieve sensors. Status Code: {response.status_code}")
+            return []
+
+        sensors_data = response.json()
+        temperatures = []
+
+        for sensor_id, sensor_info in sensors_data.items():
+            # Look for temperature sensors (type: ZLLTemperature or CLIPTemperature)
+            sensor_type = sensor_info.get("type", "")
+            sensor_name = sensor_info.get("name", "Unknown")
+            
+            # Check if it's a temperature sensor and if it's an outdoor sensor
+            if "Temperature" in sensor_type:
+                is_outdoor = "outdoor" in sensor_name.lower() or "ute" in sensor_name.lower()
+                
+                if is_outdoor:
+                    state = sensor_info.get("state", {})
+                    # Temperature is in 1/100th of degrees Celsius
+                    temp_raw = state.get("temperature")
+                    
+                    if temp_raw is not None:
+                        temp_celsius = temp_raw / 100.0
+                        temperatures.append({
+                            "id": sensor_id,
+                            "name": sensor_name,
+                            "temperature": temp_celsius
+                        })
+                        logging.info(f"Found outdoor sensor: {sensor_name} = {temp_celsius}°C")
+
+        return temperatures
+
+    except requests.RequestException as e:
+        logging.error(f"Error connecting to Hue Bridge for sensors: {e}")
+        return []
