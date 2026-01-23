@@ -1,0 +1,22 @@
+# Sensitive configuration files
+src/config.h.local
+
+# PlatformIO files
+.pio/
+.vscode/
+.DS_Store
+
+# Build artifacts
+*.o
+*.elf
+*.bin
+*.hex
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+
+# OS files
+Thumbs.db

@@ -1,0 +1,15 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// WiFi Configuration
+// Copy this file to config.h and add your credentials
+const char* WIFI_SSID = "YOUR_WIFI_SSID";
+const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+
+// Server Configuration
+const char* WEATHER_ENDPOINT = "http://kjelpi.local:5000/weather";
+
+// Update interval (milliseconds)
+const unsigned long UPDATE_INTERVAL = 60000; // 60 seconds (matches API refresh)
+
+#endif
