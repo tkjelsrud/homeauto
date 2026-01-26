@@ -424,17 +424,14 @@ def renovation():
 
 @routes.route("/airthings", methods=["GET"])
 def airthings():
-    # Temporarily disabled - Bluetooth adapter not available
-    return jsonify({"error": "Airthings temporarily unavailable - no Bluetooth adapter"}), 503
-    
-    # Original code commented out until Bluetooth is restored
-    # try:
-    #     mac_address = CONFIG.get('AIRTHINGS_MAC')
-    #     if not mac_address:
-    #         return jsonify({"error": "AIRTHINGS_MAC not configured"}), 500
-    #     airthings_data = get_airthings(mac_address)
-    #     if "error" in airthings_data:
-    #         return jsonify(airthings_data), 500
-    #     return api_response("Luftkvalitet", "🌬️", airthings_data, 15 * MINUTE)
-    # except Exception as e:
-    #     return jsonify({"error": str(e)}), 500
+    try:
+        mac_address = CONFIG.get('AIRTHINGS_MAC')
+        if not mac_address:
+            return jsonify({"error": "AIRTHINGS_MAC not configured"}), 500
+        airthings_data = get_airthings(mac_address)
+        if "error" in airthings_data:
+            return jsonify(airthings_data), 500
+        return api_response("Luftkvalitet", "🌬️", airthings_data, 15 * MINUTE)
+    except Exception as e:
+        logging.error(f"Airthings error: {e}")
+        return jsonify({"error": str(e)}), 500
