@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, render_template_string
 import subprocess, os, logging
 from config import CONFIG
 from integration.calendar import get_calendar, get_calendarweek
+from integration.birthday import get_birthdays_week, get_holidays_week
 from integration.weather import get_weather
 from integration.lights import get_zones, get_outdoor_sensor_temperatures
 from integration.dinner import get_dinner, get_dinnerweek
@@ -98,6 +99,24 @@ def bigcalendar():
         except Exception as e:
             logging.error(f"Calendar fetch failed: {e}")
         
+        # Fetch birthday data with error handling
+        birthday_data = []
+        try:
+            birthdays_file = CONFIG.get('BIRTHDAYS_FILE', './integration/birthdays.json')
+            birthday_data = get_birthdays_week(birthdays_file)
+            logging.info(f"Loaded {len(birthday_data)} birthday events")
+        except Exception as e:
+            logging.error(f"Birthday fetch failed: {e}")
+        
+        # Fetch holiday data with error handling
+        holiday_data = []
+        try:
+            holidays_file = CONFIG.get('HOLIDAYS_FILE', './integration/holidays.json')
+            holiday_data = get_holidays_week(holidays_file)
+            logging.info(f"Loaded {len(holiday_data)} holiday events")
+        except Exception as e:
+            logging.error(f"Holiday fetch failed: {e}")
+        
         # Fetch dinner data with error handling
         dinner_data = {"days": []}
         try:
@@ -128,6 +147,28 @@ def bigcalendar():
                 "summary": evt["summary"],
                 "start": evt["start"],
                 "is_next_week": (evt["week_offset"] > 0)
+            })
+        
+        # Bursdager:
+        # ➤ legg inn bursdags-events på samme måte som kalender-events
+        for bday in birthday_data:
+            idx = bday["weekday_index"]
+            
+            days[idx]["events"].append({
+                "summary": bday["summary"],
+                "start": bday["start"],
+                "is_next_week": (bday["week_offset"] > 0)
+            })
+        
+        # Helligdager:
+        # ➤ legg inn helligdags-events på samme måte
+        for holiday in holiday_data:
+            idx = holiday["weekday_index"]
+            
+            days[idx]["events"].append({
+                "summary": holiday["summary"],
+                "start": holiday["start"],
+                "is_next_week": (holiday["week_offset"] > 0)
             })
 
         # Hent timeplaner for dagens dag (kun ukedager 0-4)
@@ -383,20 +424,17 @@ def renovation():
 
 @routes.route("/airthings", methods=["GET"])
 def airthings():
-    try:
-        # Get Airthings MAC address from config
-        mac_address = CONFIG.get('AIRTHINGS_MAC')
-        
-        if not mac_address:
-            return jsonify({"error": "AIRTHINGS_MAC not configured"}), 500
-        
-        # Fetch data from Airthings device
-        airthings_data = get_airthings(mac_address)
-        
-        if "error" in airthings_data:
-            return jsonify(airthings_data), 500
-        
-        return api_response("Luftkvalitet", "🌬️", airthings_data, 15 * MINUTE)
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # Temporarily disabled - Bluetooth adapter not available
+    return jsonify({"error": "Airthings temporarily unavailable - no Bluetooth adapter"}), 503
+    
+    # Original code commented out until Bluetooth is restored
+    # try:
+    #     mac_address = CONFIG.get('AIRTHINGS_MAC')
+    #     if not mac_address:
+    #         return jsonify({"error": "AIRTHINGS_MAC not configured"}), 500
+    #     airthings_data = get_airthings(mac_address)
+    #     if "error" in airthings_data:
+    #         return jsonify(airthings_data), 500
+    #     return api_response("Luftkvalitet", "🌬️", airthings_data, 15 * MINUTE)
+    # except Exception as e:
+    #     return jsonify({"error": str(e)}), 500

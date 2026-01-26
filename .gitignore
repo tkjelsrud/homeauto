@@ -21,6 +21,7 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+**/.DS_Store
 
 # Config files with sensitive data
 config.json
@@ -30,3 +31,4 @@ config.json.serv
 integration/*.txt
 integration/*.json
 web/integration/timeplaner/*.json
+web/integration/birthdays.json

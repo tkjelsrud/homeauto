@@ -1,0 +1,73 @@
+[
+  {
+    "name": "Nyttårsdag",
+    "date": "01-01",
+    "icon": "🎆"
+  },
+  {
+    "name": "Vinterferie",
+    "week": 8,
+    "icon": "⛷️"
+  },
+  {
+    "name": "Påskeferie",
+    "week": 14,
+    "icon": "🐣",
+    "duration": 2
+  },
+  {
+    "name": "1. mai",
+    "date": "05-01",
+    "icon": "🌹"
+  },
+  {
+    "name": "17. mai",
+    "date": "05-17",
+    "icon": "🇳🇴"
+  },
+  {
+    "name": "Kristi himmelfartsdag",
+    "week": 18,
+    "icon": "⛪"
+  },
+  {
+    "name": "Sommerferie starter",
+    "date": "06-20",
+    "icon": "☀️"
+  },
+  {
+    "name": "Skolestart",
+    "date": "08-18",
+    "icon": "🎒"
+  },
+  {
+    "name": "Høstferie",
+    "week": 40,
+    "icon": "🍂"
+  },
+  {
+    "name": "Halloween",
+    "date": "10-31",
+    "icon": "🎃"
+  },
+  {
+    "name": "Julaften",
+    "date": "12-24",
+    "icon": "🎄"
+  },
+  {
+    "name": "1. juledag",
+    "date": "12-25",
+    "icon": "🎁"
+  },
+  {
+    "name": "2. juledag",
+    "date": "12-26",
+    "icon": "🎁"
+  },
+  {
+    "name": "Nyttårsaften",
+    "date": "12-31",
+    "icon": "🎉"
+  }
+]
