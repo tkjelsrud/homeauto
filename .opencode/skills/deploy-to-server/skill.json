@@ -1,0 +1,6 @@
+{
+  "name": "deploy-to-server",
+  "description": "SSH into kjelpi.local, git pull in homeauto, restart service.",
+  "entrypoint": "bash",
+  "command": "ssh thomas@kjelpi.local 'cd homeauto && git pull && sudo systemctl restart homeauto_app.service'"
+}
