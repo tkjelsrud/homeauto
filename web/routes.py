@@ -146,7 +146,7 @@ def bigcalendar():
             days[idx]["events"].append({
                 "summary": evt["summary"],
                 "start": evt["start"],
-                "is_next_week": (evt["week_offset"] > 0)
+                "is_next_week": (evt.get("days_ahead", 0) > 7)
             })
         
         # Bursdager:

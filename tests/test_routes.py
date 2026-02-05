@@ -22,13 +22,15 @@ def test_home_route(client):
     """Test the home page loads successfully."""
     response = client.get("/")  # Simulate GET request
     assert response.status_code == 200  # Check if the response is OK
-    assert b"Welcome" in response.data  # Check if page contains "Welcome"
+    assert b"<title>My Home Automation</title>" in response.data  # Check if page contains title
 
 def test_calendar_route(client):
     """Test the /calendar route."""
     response = client.get("/calendar")
     assert response.status_code == 200  # API should return 200
-    assert isinstance(response.json, list)  # Response should be a JSON list
+    assert isinstance(response.json, dict)  # Response should be a JSON dict
+    assert "data" in response.json  # Should contain data key
+    assert isinstance(response.json["data"], list)  # Data should be a list
 
 def test_bigcalendar_route(client):
     """Test the /bigcalendar route returns correct structure."""
@@ -186,16 +188,19 @@ def test_invalid_route(client):
     response = client.get("/invalid")
     assert response.status_code == 404  # Should return Not Found
 
-def test_mill_heater():
-    from millheater import Mill
+@pytest.mark.asyncio
+async def test_mill_heater():
+    from mill import Mill
 
     username = "tkjelsrud@gmail.com"
     password = "najdan-0muzty-kohreD"
 
     mill = Mill(username, password)
-    mill.authenticate()
+    await mill.connect()
 
-    devices = mill.get_devices()
+    await mill.fetch_heater_and_sensor_data()
 
-    for device in devices:
-        print(f"{device.name} | {device.room} | Current: {device.currentTemp}°C | Target: {device.targetTemp}°C")
+    for device in mill.devices.values():
+        print(f"{device.name} | Current: {device.current_temp}°C | Target: {device.set_temp}°C")
+    
+    await mill.close_connection()

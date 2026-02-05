@@ -1,7 +1,6 @@
 flask
 flask-cors
 influxdb        # For InfluxDB 2.x (use `influxdb` for 1.x)
-sqlite3         # Lightweight alternative (built into Python)
 flask-socketio       # WebSockets for real-time updates
 eventlet             # Required for async WebSockets in Flask
 requests             # Fetching external APIs (weather, stocks, etc.)

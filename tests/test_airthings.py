@@ -112,6 +112,9 @@ async def scan_for_airthings(duration=10):
         print("  Linux: sudo bluetoothctl → scan on")
         return []
 
+import pytest
+
+@pytest.mark.asyncio
 async def test_airthings():
     try:
         from airthings_ble import AirthingsBluetoothDeviceData

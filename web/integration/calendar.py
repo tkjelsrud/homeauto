@@ -1,4 +1,5 @@
 import requests, icalendar
+import logging
 from flask import jsonify
 from datetime import datetime, timezone, date, timedelta
 
@@ -55,7 +56,7 @@ def get_calendar(URL):
                         event_date = event_start  # Already a date, no need to extract
 
                     # Compare by date only
-                    if now <= event_date <= end_date:
+                    if now <= event_date <= end_date and 'event_date' in locals() and 'formatted_start' in locals():
                         events.append({"summary": event_summary or "Ingen tittel", "start": formatted_start})
                 except Exception as e:
                     logging.warning(f"Skipping malformed calendar event: {e}")
@@ -125,12 +126,14 @@ def get_calendarweek(URL):
                 week_offset = event_iso_week - this_iso_week
 
                 weekday_index = event_date.weekday()
+                days_ahead = (event_date - today).days
 
                 events.append({
                     "summary": summary or "Ingen tittel",
                     "start": formatted,
                     "weekday_index": weekday_index,
-                    "week_offset": week_offset
+                    "week_offset": week_offset,
+                    "days_ahead": days_ahead
                 })
             except Exception as e:
                 logging.warning(f"Skipping malformed calendar event: {e}")

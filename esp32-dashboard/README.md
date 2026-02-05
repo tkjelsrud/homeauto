@@ -20,6 +20,11 @@ See [PINS.md](PINS.md) for verified working GPIO configuration.
 
 **Critical:** MOSI is GPIO 9 (not GPIO 6 as shown in some schematics)
 
+**Battery Monitoring:** GPIO 4 is used for battery voltage monitoring
+- Requires voltage divider: Vbat → R1(100kΩ) → GPIO4 → R2(100kΩ) → GND
+- This allows measuring up to ~6.6V (suitable for single-cell LiPo 3.7V nominal)
+- Battery indicator shows in top-right of display with percentage
+
 ### 3. Libraries Used
 - GxEPD2: E-paper display driver (GxEPD2_750_T7)
 - Adafruit GFX: Graphics library

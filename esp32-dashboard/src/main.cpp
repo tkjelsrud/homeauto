@@ -26,6 +26,11 @@
 #define EPD_SCK     7   // ESP_IO7/SCK
 #define EPD_MOSI    9   // ESP_IO9/MOSI
 
+// Battery monitoring (ADC pin)
+#define BATTERY_PIN 4   // GPIO4 (ADC1_CH3) for battery voltage reading
+// If using voltage divider: Vbat -> R1(100k) -> GPIO4 -> R2(100k) -> GND
+// This gives Vmeasured = Vbat / 2, so max measurable is ~6.6V
+
 // Display: 7.5" 800x480 Waveshare 7.50inv2
 GxEPD2_BW<GxEPD2_750_T7, GxEPD2_750_T7::HEIGHT> display(GxEPD2_750_T7(EPD_CS, EPD_DC, EPD_RST, EPD_BUSY));
 
@@ -44,10 +49,12 @@ void connectWiFi(bool verbose = false);
 bool fetchWeatherData(JsonDocument& doc);
 bool fetchCalendarData(JsonDocument& doc);
 bool fetchAirthingsData(JsonDocument& doc);
+bool fetchMillData(JsonDocument& doc);
 void displayWeather(JsonDocument& doc);
 void displayCalendar(JsonDocument& doc);
 void printNorwegian(const char* text);
-
+float readBatteryVoltage();
+int getBatteryPercentage(float voltage);uint64_t calculateSleepTime();
 void syncTime() {
   configTime(3600, 3600, "pool.ntp.org", "time.nist.gov"); // UTC+1 + DST
   Serial.print("Syncing time");
@@ -285,6 +292,157 @@ bool fetchAirthingsData(JsonDocument& doc) {
   }
 }
 
+bool fetchMillData(JsonDocument& doc) {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi not connected");
+    return false;
+  }
+  Serial.print("Fetching Mill from: ");
+  Serial.println(MILL_ENDPOINT);
+  HTTPClient http;
+  http.begin(MILL_ENDPOINT);
+  http.setTimeout(HTTP_TIMEOUT);
+  int httpCode = http.GET();
+  Serial.print("Mill HTTP response: ");
+  Serial.println(httpCode);
+  if (httpCode == HTTP_CODE_OK) {
+    String payload = http.getString();
+    Serial.println("Mill data received");
+    DeserializationError error = deserializeJson(doc, payload);
+    if (error) {
+      Serial.print("Mill JSON parsing failed: ");
+      Serial.println(error.c_str());
+      http.end();
+      return false;
+    }
+    http.end();
+    return true;
+  } else {
+    Serial.print("Mill HTTP GET failed, error: ");
+    Serial.println(httpCode);
+    http.end();
+    return false;
+  }
+}
+
+// Read battery voltage from ADC
+// Assumes voltage divider: Vbat -> R1(100k) -> GPIO4 -> R2(100k) -> GND
+// This gives Vmeasured = Vbat / 2
+float readBatteryVoltage() {
+  // Configure ADC
+  analogReadResolution(12); // 12-bit resolution (0-4095)
+  analogSetAttenuation(ADC_11db); // 0-3.3V range
+  
+  // Take multiple readings and average
+  int samples = 10;
+  int total = 0;
+  for (int i = 0; i < samples; i++) {
+    total += analogRead(BATTERY_PIN);
+    delay(10);
+  }
+  int adcValue = total / samples;
+  
+  // Convert ADC value to voltage
+  // ADC_11db: 0-4095 maps to 0-3.3V (approximately)
+  // Note: ADC on ESP32-S3 has non-linear response, especially at higher voltages
+  // For more accurate readings, use esp_adc_cal library for calibration
+  float voltage = (adcValue / 4095.0) * 3.3;
+  
+  // Check if voltage divider is used (if adcValue is very low, might be direct connection)
+  // If no voltage divider, comment out the next line
+  // Multiply by 2 if using voltage divider (100k/100k)
+  voltage = voltage * 2.0;
+  
+  Serial.print("Battery ADC raw: ");
+  Serial.print(adcValue);
+  Serial.print(" (0-4095), Voltage at pin: ");
+  Serial.print((adcValue / 4095.0) * 3.3, 2);
+  Serial.print("V, Calculated battery: ");
+  Serial.print(voltage, 2);
+  Serial.println("V");
+  
+  return voltage;
+}
+
+// Convert battery voltage to percentage (for LiPo/Li-ion)
+int getBatteryPercentage(float voltage) {
+  // LiPo voltage curve (approximate):
+  // 4.2V = 100%, 3.7V = 50%, 3.3V = 0%
+  if (voltage >= 4.2) return 100;
+  if (voltage <= 3.3) return 0;
+  
+  // Linear approximation
+  return (int)((voltage - 3.3) / (4.2 - 3.3) * 100);
+}
+
+// Calculate sleep time until next scheduled wake-up
+uint64_t calculateSleepTime() {
+  if (!getLocalTime(&timeinfo)) {
+    Serial.println("Failed to get time for sleep calculation, using fallback");
+    return DEEP_SLEEP_SECONDS;
+  }
+  
+  int currentHour = timeinfo.tm_hour;
+  int currentMin = timeinfo.tm_min;
+  int currentTotalMinutes = currentHour * 60 + currentMin;
+  
+  Serial.print("Current time: ");
+  Serial.print(currentHour);
+  Serial.print(":");
+  Serial.println(currentMin);
+  
+  // Find next wake time
+  int nextWakeMinutes = -1;
+  
+  // Check all scheduled times today
+  for (int i = 0; i < NUM_WAKE_TIMES; i++) {
+    int wakeMinutes = WAKE_TIMES[i][0] * 60 + WAKE_TIMES[i][1];
+    if (wakeMinutes > currentTotalMinutes) {
+      nextWakeMinutes = wakeMinutes;
+      Serial.print("Next wake time today: ");
+      Serial.print(WAKE_TIMES[i][0]);
+      Serial.print(":");
+      Serial.println(WAKE_TIMES[i][1]);
+      break;
+    }
+  }
+  
+  // If no more times today, wake at first time tomorrow (05:00)
+  if (nextWakeMinutes == -1) {
+    // Calculate minutes until 05:00 tomorrow
+    int minutesUntilMidnight = (24 * 60) - currentTotalMinutes;
+    int firstWakeMinutes = WAKE_TIMES[0][0] * 60 + WAKE_TIMES[0][1]; // 05:00 = 300 minutes
+    nextWakeMinutes = currentTotalMinutes + minutesUntilMidnight + firstWakeMinutes;
+    
+    Serial.print("No more times today. Next wake: tomorrow at ");
+    Serial.print(WAKE_TIMES[0][0]);
+    Serial.print(":");
+    Serial.println(WAKE_TIMES[0][1]);
+  }
+  
+  // Calculate sleep duration
+  int sleepMinutes;
+  if (nextWakeMinutes > currentTotalMinutes) {
+    sleepMinutes = nextWakeMinutes - currentTotalMinutes;
+  } else {
+    // Next day calculation
+    sleepMinutes = (24 * 60) - currentTotalMinutes + nextWakeMinutes;
+  }
+  
+  // Add 1 minute buffer to ensure we don't wake too early
+  sleepMinutes += 1;
+  
+  uint64_t sleepSeconds = sleepMinutes * 60;
+  
+  Serial.print("Sleep duration: ");
+  Serial.print(sleepMinutes);
+  Serial.print(" minutes (");
+  Serial.print(sleepMinutes / 60.0, 1);
+  Serial.println(" hours)");
+  
+  return sleepSeconds;
+}
+
 // Helper function to print Norwegian text with special character support
 void printNorwegian(const char* text) {
   String str = String(text);
@@ -436,8 +594,12 @@ void displayCalendar(JsonDocument& doc) {
       if (dinner != nullptr && strlen(dinner) > 0) {
         display.setFont(&FreeMonoBold9pt7b);
         display.setCursor(280, y);
-        display.print("Middag: ");
-        printNorwegian(dinner);
+        // Limit dinner text to 40 characters (same as events)
+        String dinnerStr = String(dinner);
+        if (dinnerStr.length() > 40) {
+          dinnerStr = dinnerStr.substring(0, 37) + "...";
+        }
+        printNorwegian(dinnerStr.c_str());
         y += 20;
       }
     }
@@ -446,9 +608,6 @@ void displayCalendar(JsonDocument& doc) {
     if (!days[i]["events"].isNull()) {
       JsonArray events = days[i]["events"].as<JsonArray>();
       if (events.size() > 0) {
-        display.setCursor(280, y);
-        display.print("Hendelser:");
-        y += 18;
         for (JsonObject ev : events) {
           if (ev["is_next_week"]) continue;
           display.setCursor(290, y);
@@ -466,10 +625,10 @@ void displayCalendar(JsonDocument& doc) {
             display.print(timeStr);
           }
           display.print(" ");
-          // Limit summary to 32 characters
+          // Limit summary to 40 characters
           String summaryStr = String(summary);
-          if (summaryStr.length() > 32) {
-            summaryStr = summaryStr.substring(0, 29) + "...";
+          if (summaryStr.length() > 40) {
+            summaryStr = summaryStr.substring(0, 37) + "...";
           }
           printNorwegian(summaryStr.c_str());
           y += 16;
@@ -499,10 +658,10 @@ void displayCalendar(JsonDocument& doc) {
             display.print(timeStr);
           }
           display.print(" ");
-          // Limit summary to 32 characters
+          // Limit summary to 40 characters
           String summaryStr = String(summary);
-          if (summaryStr.length() > 32) {
-            summaryStr = summaryStr.substring(0, 29) + "...";
+          if (summaryStr.length() > 40) {
+            summaryStr = summaryStr.substring(0, 37) + "...";
           }
           printNorwegian(summaryStr.c_str());
           y += 16;
@@ -637,6 +796,86 @@ void displayWeather(JsonDocument& doc) {
     display.print(wind, 1);
     display.print(" m/s");
     
+    // === MILL TEMPERATURES ===
+    JsonDocument millDoc;
+    if (fetchMillData(millDoc)) {
+      display.setFont(&FreeMonoBold9pt7b);
+      int y = 280;
+      JsonObject rooms = millDoc["data"]["rooms"];
+      int count = 0;
+      for (JsonPair room : rooms) {
+        if (count >= 3) break; // Max 3 lines
+        JsonArray devices = room.value().as<JsonArray>();
+        if (devices.size() > 0) {
+          JsonObject device = devices[0];
+          String roomName = String(room.key().c_str());
+          float temp = device["ambient_temp"] | 0.0;
+          int power = device["power"] | 0;
+          
+          // Pad room name to exactly 8 characters
+          while (roomName.length() < 8) roomName += " ";
+          if (roomName.length() > 8) roomName = roomName.substring(0, 8);
+          
+          // Create formatted string
+          char line[32];
+          if (power > 0) {
+            snprintf(line, sizeof(line), "%s:%4.1fc (PA)", roomName.c_str(), temp);
+          } else {
+            snprintf(line, sizeof(line), "%s:%4.1fc", roomName.c_str(), temp);
+          }
+          
+          // Draw text normally in black
+          display.setCursor(20, y);
+          display.setTextColor(GxEPD_BLACK);
+          display.print(line);
+          
+          y += 20;
+          count++;
+        }
+      }
+    }
+    
+    // Battery indicator in bottom-left corner
+    float batteryVoltage = readBatteryVoltage();
+    int batteryPercent = getBatteryPercentage(batteryVoltage);
+    
+    // Show battery status with debug info
+    // NOTE: If ADC value is close to 4095 (max), the pin is floating - no battery connected
+    // To disable battery display, comment out this entire section
+    // Common issue: reTerminal E1001 may not have battery on GPIO4 by default
+    
+    // More lenient check - show if voltage seems valid for battery (2.5V - 5V)
+    // Adjusted from 2.0-6.0 to be more specific for USB power (5V) or LiPo (3.7-4.2V)
+    bool showBattery = (batteryVoltage > 2.5 && batteryVoltage < 5.5);
+    
+    if (showBattery) {
+      display.setFont(&FreeMonoBold9pt7b);
+      
+      // Draw battery icon (simple rectangle with fill)
+      int battX = 10;
+      int battY = 460;
+      display.drawRect(battX, battY, 30, 14, GxEPD_BLACK); // Battery body
+      display.fillRect(battX + 30, battY + 4, 3, 6, GxEPD_BLACK); // Battery tip
+      
+      // Fill battery based on percentage
+      int fillWidth = (batteryPercent * 26) / 100; // 26 = 30-4 (leave margin)
+      if (fillWidth > 0) {
+        display.fillRect(battX + 2, battY + 2, fillWidth, 10, GxEPD_BLACK);
+      }
+      
+      // Display voltage and percentage for debugging
+      display.setCursor(battX + 35, battY + 12);
+      display.print(batteryVoltage, 1);
+      display.print("V ");
+      display.print(batteryPercent);
+      display.print("%");
+    } else {
+      // Debug: Show why battery is not displayed
+      Serial.print("Battery not displayed - voltage out of range: ");
+      Serial.print(batteryVoltage, 2);
+      Serial.println("V (expected 2.5-5.5V)");
+    }
+    
     // Vertical separator line
     display.drawLine(260, 0, 260, 480, GxEPD_BLACK);
     
@@ -680,6 +919,9 @@ void setup() {
   delay(1000);
   Serial.println("reTerminal E1001 - Weather Dashboard");
   
+  // Initialize battery monitoring pin
+  pinMode(BATTERY_PIN, INPUT);
+  
   // Initialize SPI with custom pins
   SPI.begin(EPD_SCK, -1, EPD_MOSI, EPD_CS);
   
@@ -690,22 +932,30 @@ void setup() {
   
   Serial.println("Display initialized");
   
-  // Connect to WiFi (verbose mode for initial connection)
-  connectWiFi(true);
-  
-  // Sync time
-  if (WiFi.status() == WL_CONNECTED) {
-    syncTime();
-  } else {
-    Serial.print("WiFi not connected after initial setup (Status: ");
-    Serial.print(WiFi.status());
-    Serial.println(")");
+  // Try to connect to WiFi with limited attempts
+  bool wifiConnected = false;
+  for (int attempt = 1; attempt <= MAX_WIFI_CONNECTION_ATTEMPTS && !wifiConnected; attempt++) {
+    Serial.print("WiFi connection attempt ");
+    Serial.print(attempt);
+    Serial.print(" of ");
+    Serial.println(MAX_WIFI_CONNECTION_ATTEMPTS);
+    
+    connectWiFi(attempt == 1); // Verbose only on first attempt
+    
+    if (WiFi.status() == WL_CONNECTED) {
+      wifiConnected = true;
+    } else if (attempt < MAX_WIFI_CONNECTION_ATTEMPTS) {
+      Serial.println("Waiting 5 seconds before next attempt...");
+      delay(5000);
+    }
   }
   
-  // Fetch and display weather immediately
-  Serial.print("WiFi status check: ");
-  Serial.println(WiFi.status());
-  if (WiFi.status() == WL_CONNECTED) {
+  // Only proceed with data fetching if WiFi is connected
+  if (wifiConnected) {
+    // Sync time
+    syncTime();
+    
+    // Fetch and display weather
     Serial.println("Fetching weather data...");
     JsonDocument doc;
     if (fetchWeatherData(doc)) {
@@ -713,44 +963,77 @@ void setup() {
       displayWeather(doc);
       lastUpdate = millis();
     } else {
-      Serial.println("Failed to fetch weather data");
+      Serial.println("Failed to fetch weather data - will retry next wake");
     }
   } else {
-    Serial.print("WiFi not connected - will retry in 30 seconds (Status: ");
-    Serial.print(WiFi.status());
-    Serial.println(")");
-    lastWiFiCheck = millis();
+    // WiFi failed after all attempts - show error
+    Serial.print("WiFi connection failed after ");
+    Serial.print(MAX_WIFI_CONNECTION_ATTEMPTS);
+    Serial.println(" attempts - will retry in 30 minutes");
+    
+    // Show WiFi error on display
+    display.setFullWindow();
+    display.firstPage();
+    do {
+      display.fillScreen(GxEPD_WHITE);
+      display.setFont(&FreeMonoBold18pt7b);
+      display.setCursor(100, 200);
+      display.print("WiFi feil");
+      display.setFont(&FreeMonoBold12pt7b);
+      display.setCursor(100, 250);
+      display.print("Prover igjen om 30 min");
+    } while (display.nextPage());
+    display.hibernate();
   }
+  
+  // Always turn off WiFi and go to deep sleep to save power
+  Serial.println("Turning off WiFi and entering deep sleep...");
+  
+  // Calculate smart sleep time based on schedule
+  uint64_t sleepTime = calculateSleepTime();
+  
+  // Check battery and potentially extend sleep if critical
+  float batteryVoltage = readBatteryVoltage();
+  
+  if (batteryVoltage > 2.5 && batteryVoltage < 5.5) {
+    // Valid battery reading exists
+    if (batteryVoltage < BATTERY_LOW_THRESHOLD) {
+      // Low battery - potentially skip next wake and sleep longer
+      Serial.println("WARNING: Low battery detected!");
+      Serial.print("Battery voltage: ");
+      Serial.print(batteryVoltage, 2);
+      Serial.println("V");
+      // Still use scheduled time, but log the warning
+    }
+  }
+  
+  Serial.print("Entering deep sleep for ");
+  Serial.print(sleepTime);
+  Serial.println(" seconds");
+  
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_OFF);
+  delay(100);
+  
+  // Enter deep sleep
+  esp_sleep_enable_timer_wakeup(sleepTime * 1000000ULL); // Convert to microseconds
+  Serial.println("Going to sleep now...");
+  Serial.flush(); // Wait for serial to finish
+  esp_deep_sleep_start();
+  
+  // Code never reaches here - ESP32 will restart after waking
 }
 
 void loop() {
-  // Check WiFi connection periodically
-  if (WiFi.status() != WL_CONNECTED && millis() - lastWiFiCheck >= WIFI_RETRY_INTERVAL) {
-    wifiRetryCount++;
-    Serial.print("[Retry #");
-    Serial.print(wifiRetryCount);
-    Serial.print("] ");
-    connectWiFi(false);  // Quiet mode for retries
-    lastWiFiCheck = millis();
-    
-    if (WiFi.status() == WL_CONNECTED) {
-      wifiRetryCount = 0; // Reset counter on success
-      syncTime();
-    }
-  }
+  // This code should never be reached with deep sleep enabled
+  // If we get here, something went wrong with deep sleep
+  Serial.println("ERROR: loop() should not execute with deep sleep enabled!");
+  Serial.println("Attempting to enter deep sleep again...");
   
-  // Update weather data periodically (only if connected)
-  if (WiFi.status() == WL_CONNECTED && millis() - lastUpdate >= UPDATE_INTERVAL) {
-    Serial.println("Updating weather data...");
-    
-    JsonDocument doc;
-    if (fetchWeatherData(doc)) {
-      displayWeather(doc);
-      lastUpdate = millis();
-    } else {
-      Serial.println("Failed to update weather data");
-    }
-  }
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_OFF);
+  delay(100);
   
-  delay(1000);
+  esp_sleep_enable_timer_wakeup(DEEP_SLEEP_SECONDS * 1000000ULL);
+  esp_deep_sleep_start();
 }
