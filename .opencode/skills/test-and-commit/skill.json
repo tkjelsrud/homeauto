@@ -1,6 +1,6 @@
 {
   "name": "test-and-commit",
-  "description": "Run all pytest unit tests, and if and only if all tests pass, commit all staged changes to git.",
+  "description": "Run all pytest unit tests, and if and only if all tests pass, auto-commit staged changes to git with a summary message.",
   "entrypoint": "bash",
-  "command": "cd /Users/tkjelsrud/Public/homeauto && source venv/bin/activate && pytest tests/ && git add . && git commit -m 'Tested: all unit tests pass'"
+  "command": "cd /Users/tkjelsrud/Public/homeauto && source venv/bin/activate && pytest tests/ && git add . && git commit -m '[test-and-commit] All tests pass – auto commit' -m \"$(git diff --cached --stat)\""
 }

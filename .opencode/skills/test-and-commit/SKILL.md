@@ -1,17 +1,17 @@
 ---
 name: test-and-commit
-description: Run all unit tests, and if and only if all tests pass, automatically commit all staged changes to git.
+description: Run all unit tests, and if and only if all tests pass, automatically commit all staged changes to git with an auto-generated message summarizing the changes.
 ---
 
 ## What I do
 
 - Run all pytest unit tests (`tests/`)
-- If (and only if) all tests pass, commit all staged changes to git with a default message
+- If (and only if) all tests pass, commit all staged changes to git with an auto-generated commit message summarizing what was changed
 - If any test fails, nothing is committed and failure is shown
 
 ## When to use me
 
-Use this skill when you want to ensure your code is only committed when all unit tests succeed. This enforces atomic and reliable git commits.
+Use this skill when you want your code to be committed **only when all tests succeed, and every commit message reflects the actual files/changes made**. This enforces atomic, reliable, and self-describing git commits.
 
 ## Usage
 
@@ -22,28 +22,34 @@ cd /Users/tkjelsrud/Public/homeauto && \
 source venv/bin/activate && \
 pytest tests/ && \
 git add . && \
-git commit -m "Tested: all unit tests pass"
+git commit -m "[test-and-commit] All tests pass – auto commit" -m "$(git diff --cached --stat)"
+```
+
+Or, for a multi-line summary including a section heading:
+```bash
+git commit -m "[test-and-commit] All tests pass – auto commit" \
+  -m "Changes:\n$(git diff --cached --stat)"
 ```
 
 **If tests fail:**
 - No commit is made; pytest output highlights failure.
 
-**To specify a custom commit message:**
-Change the message in `git commit -m "..."`
-
 ## Requirements
-- Virtualenv must be active (venv/)
+- Python virtualenv must be active (venv/)
 - pytest must be installed
 - The project must be a git repository
-- All changes to be committed must be staged (or use `git add .` before)
 
 ## Example Output
 
 If all tests pass:
 ```
 ==================== 11 passed in 8.00s ====================
-[Tested: all unit tests pass]
-[Git commit hash: abcdef1]
+[test-and-commit] All tests pass – auto commit
+
+Changes:
+ web/routes.py     | 10 +++++++---
+ requirements.txt  |  2 +-
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 ```
 If any test fails:
 ```
