@@ -1,0 +1,6 @@
+{
+  "name": "test-and-commit",
+  "description": "Run all pytest unit tests, and if and only if all tests pass, commit all staged changes to git.",
+  "entrypoint": "bash",
+  "command": "cd /Users/tkjelsrud/Public/homeauto && source venv/bin/activate && pytest tests/ && git add . && git commit -m 'Tested: all unit tests pass'"
+}
