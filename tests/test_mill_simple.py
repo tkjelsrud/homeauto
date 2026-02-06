@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import requests
 import json
+import os
 import sys
+import pytest
 
 def test_mill_new_api():
     """Test Mill Norway's new API
@@ -10,14 +12,12 @@ def test_mill_new_api():
     Example: python test_mill_simple.py your@email.com yourpassword
     """
     
-    if len(sys.argv) < 3:
-        print("ERROR: Missing credentials")
-        print("Usage: python test_mill_simple.py <username> <password>")
-        sys.exit(1)
+    username = os.environ.get("MILL_USERNAME")
+    password = os.environ.get("MILL_PASSWORD")
+    if not username or not password:
+        pytest.skip("Missing MILL_USERNAME/MILL_PASSWORD in environment")
     
     base_url = "https://api.millnorwaycloud.com"
-    username = sys.argv[1]
-    password = sys.argv[2]
     
     # Step 1: Sign in to get tokens
     print("Signing in...")
@@ -137,4 +137,3 @@ def test_mill_new_api():
 
 if __name__ == "__main__":
     test_mill_new_api()
-

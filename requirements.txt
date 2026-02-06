@@ -4,6 +4,10 @@ influxdb        # For InfluxDB 2.x (use `influxdb` for 1.x)
 flask-socketio       # WebSockets for real-time updates
 eventlet             # Required for async WebSockets in Flask
 requests             # Fetching external APIs (weather, stocks, etc.)
+google-api-python-client
+google-auth
+PyMuPDF
+pdfminer.six
 pyyaml               # Parsing YAML config files if needed
 paho-mqtt            # MQTT communication (for Zigbee2MQTT)
 pyserial             # Serial communication if needed (e.g., reading HAN power meters)

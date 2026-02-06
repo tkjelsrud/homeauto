@@ -1,0 +1,784 @@
+{
+  "source_file_id": "local",
+  "source_name": "ukeplan_dummy.pdf",
+  "modified_time": "2026-02-06T16:43:55.258135+00:00",
+  "generated_at": "2026-02-06T16:43:55.363279+00:00",
+  "events": [
+    {
+      "date_iso": "2026-02-02",
+      "title": "4A har mat og helse på kjøkkenet. Ta med forkle og hårstrikk.",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-04",
+      "title": "4A skal på forfatterbesøk med Nora Dåsnes i skolens samlingssal.",
+      "description": "",
+      "weekday_index": 2,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-05",
+      "title": "Husk gymtøy, gymsko, håndkle + såpe til kroppsøving.",
+      "description": "",
+      "weekday_index": 3,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Uke 7",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "4A har mat og helse på kjøkkenet. Ta med forkle og hårstrikk.",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-03",
+      "title": "4A besøker skolebiblioteket for å låne og levere bøker.",
+      "description": "",
+      "weekday_index": 1,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-05",
+      "title": "Husk gymtøy, gymsko, håndkle + såpe til kroppsøving.",
+      "description": "",
+      "weekday_index": 3,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "4A skal på svømming på Nordtvet bad. Husk: badetøy, håndkle og såpe.",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kontaktinformasjon",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "E-post:",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Simen, kontaktlærer: simen.stifoss@osloskolen.no",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Hege, kontaktlærer:  hege.gromsrud@osloskolen.no",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Susanne, kontaktlærer: susanne.skaret@osloskolen.no",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "André, baseleder AKS 4: andre.ullern@osloskolen.no",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "AKS-fellesmail: aks.arvoll@osloskolen.no",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Trinntelefon:",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Trinntelefon: 46 84 92 46",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Aktivitetsskolen 4. trinn: 477 87 433",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Årvoll skoles administrasjon: 22 07 42 10",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Beskjeder fra Aktivitetsskolen:",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "i uke 6 er det basen bestemmer.",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "i uke 7 er det læringskarusellen.",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "2.februar benytter av oss av Vigilo. Alle må legge inn hentetider før fredag 30. januar. Hvis",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "ikke må barna hentes til dette er gjort.",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "• All viktig informasjon om hjemsending sendes innen kl.12 hver dag på Vigilo. Vi ønsker at foresatte",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "kommer inn i skolegården ved henting av barn.",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "• Husk at barnas smartklokker alltid skal ligge i sekken, uavhengig om den er i skolemodus.",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "• Viktig at barna har ekstra skiftetøy på plassen sin, samt har regntøy lett tilgjengelig ved dårlig vær!",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "Kontakt base 4 om du lurer på noe, så ring eller send sms på 477 87 433 eller e-post.",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-02",
+      "title": "Uke 6 og 7",
+      "description": "",
+      "weekday_index": 0,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Skolen slutter",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:45",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:45",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:45",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:15",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:45",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Brødmat,",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "grønnsaker & div",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "pålegg",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:45-14:15",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Brødmat,",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "grønnsaker &",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "div pålegg",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:45-14:15",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Brødmat,",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "grønnsaker &",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "div pålegg",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:45-14:15",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Brødmat,",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "grønnsaker &",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "div pålegg",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:15-13:45",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Brødmat,",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "grønnsaker & div",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "pålegg",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kl.13:45-14:15",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "13:45-14:45",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek in",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "14:30-15:30",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Leksehjelp",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Lek og moro",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Kunst",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "All idrett",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Digitale",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "ferdigheter",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Rosa sko broen",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Uke 6:",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Basen bestemmer",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Uke 7:",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Læringskarusellen",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "14:45-16:00",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek ute",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek ute",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek ute",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek ute",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek ute",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "16:00-16:45",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne på",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "base 3",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne på",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "base 3",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne på",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "base 3",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne på",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "base 3",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Frilek inne på",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "base 3",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "16:45",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Aks stenger",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Aks stenger",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Aks stenger",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Aks stenger",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    },
+    {
+      "date_iso": "2026-02-06",
+      "title": "Aks stenger",
+      "description": "",
+      "weekday_index": 4,
+      "confidence": 0.8,
+      "source_file_id": "local"
+    }
+  ]
+}

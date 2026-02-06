@@ -1,7 +1,9 @@
 from flask import Blueprint, jsonify, render_template_string
-import subprocess, os, logging
+import subprocess, os, logging, json
+from pathlib import Path
 from config import CONFIG
 from integration.calendar import get_calendar, get_calendarweek
+from integration.ukeplan import load_latest_ukeplan
 from integration.birthday import get_birthdays_week, get_holidays_week
 from integration.weather import get_weather
 from integration.lights import get_zones, get_outdoor_sensor_temperatures
@@ -73,6 +75,19 @@ def calendar():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@routes.route("/ukeplan", methods=["GET"])
+def ukeplan():
+    try:
+        base_dir = Path(__file__).resolve().parents[1]
+        latest_path = base_dir / "data" / "ukeplan" / "latest.json"
+        if not latest_path.exists():
+            return jsonify({})
+        with open(latest_path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+        return jsonify(payload)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @routes.route("/bigcalendar", methods=["GET"])
 def bigcalendar():
     try:
@@ -98,6 +113,14 @@ def bigcalendar():
             calendar_data = get_calendarweek(CONFIG['calendar'])
         except Exception as e:
             logging.error(f"Calendar fetch failed: {e}")
+
+        # Fetch ukeplan data with error handling
+        ukeplan_data = []
+        try:
+            ukeplan_data = load_latest_ukeplan()
+            logging.info(f"Loaded {len(ukeplan_data)} ukeplan events")
+        except Exception as e:
+            logging.error(f"Ukeplan load failed: {e}")
         
         # Fetch birthday data with error handling
         birthday_data = []
@@ -147,6 +170,17 @@ def bigcalendar():
                 "summary": evt["summary"],
                 "start": evt["start"],
                 "is_next_week": (evt.get("days_ahead", 0) > 7)
+            })
+
+        # Ukeplan:
+        # ➤ legg inn ukeplan-events på samme måte som kalender-events
+        for evt in ukeplan_data:
+            idx = evt["weekday_index"]
+
+            days[idx]["events"].append({
+                "summary": evt["summary"],
+                "start": evt["start"],
+                "is_next_week": (evt.get("week_offset", 0) > 0)
             })
         
         # Bursdager:
