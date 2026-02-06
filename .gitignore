@@ -23,6 +23,13 @@ build/
 .DS_Store
 Thumbs.db
 **/.DS_Store
+test-output.xml
+
+# Local data artifacts
+data/ukeplan/*.json
+
+# ESP32 stray files
+esp32-dashboard/images/Untitled.pxd
 
 # Config files with sensitive data
 config.json
