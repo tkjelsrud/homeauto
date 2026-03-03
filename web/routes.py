@@ -160,49 +160,56 @@ def bigcalendar():
             days[idx]["dinner"] = dinner["description"]
 
         # Kalender:
-        # ➤ legg inn ALLE events (også neste uke)
-        # ➤ legg events på riktig weekday_index
-        # ➤ marker om det er neste uke eller ikke
+        # ➤ legg inn kun denne ukens events
+        # ➤ behold samme responsformat for ESP32/web (is_next_week finnes fortsatt)
         for evt in calendar_data:
+            if evt.get("week_offset", 0) != 0:
+                continue
             idx = evt["weekday_index"]
 
             days[idx]["events"].append({
                 "summary": evt["summary"],
                 "start": evt["start"],
-                "is_next_week": (evt.get("days_ahead", 0) > 7)
+                "is_next_week": False
             })
 
         # Ukeplan:
-        # ➤ legg inn ukeplan-events på samme måte som kalender-events
+        # ➤ legg kun inn denne ukens ukeplan-events
         for evt in ukeplan_data:
+            if evt.get("week_offset", 0) != 0:
+                continue
             idx = evt["weekday_index"]
 
             days[idx]["events"].append({
                 "summary": evt["summary"],
                 "start": evt["start"],
-                "is_next_week": (evt.get("week_offset", 0) > 0)
+                "is_next_week": False
             })
         
         # Bursdager:
-        # ➤ legg inn bursdags-events på samme måte som kalender-events
+        # ➤ legg kun inn denne ukens bursdager
         for bday in birthday_data:
+            if bday.get("week_offset", 0) != 0:
+                continue
             idx = bday["weekday_index"]
             
             days[idx]["events"].append({
                 "summary": bday["summary"],
                 "start": bday["start"],
-                "is_next_week": (bday["week_offset"] > 0)
+                "is_next_week": False
             })
         
         # Helligdager:
-        # ➤ legg inn helligdags-events på samme måte
+        # ➤ legg kun inn denne ukens helligdager
         for holiday in holiday_data:
+            if holiday.get("week_offset", 0) != 0:
+                continue
             idx = holiday["weekday_index"]
             
             days[idx]["events"].append({
                 "summary": holiday["summary"],
                 "start": holiday["start"],
-                "is_next_week": (holiday["week_offset"] > 0)
+                "is_next_week": False
             })
 
         # Hent timeplaner for dagens dag (kun ukedager 0-4)
